@@ -515,4 +515,514 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // ==========================================================================
+  // KLINIK MARISTELLA: APPOINTMENT STATUS SWITCHER & BILLING DRAWER / MODAL
+  // ==========================================================================
+
+  let currentAppointmentMode = 'before'; // 'before' | 'after'
+  let isBillPaid = false;
+
+  const desktopStateBefore = document.getElementById('desktop-state-before');
+  const desktopStateAfter = document.getElementById('desktop-state-after');
+  const mobileStateBefore = document.getElementById('mobile-state-before');
+  const mobileStateAfter = document.getElementById('mobile-state-after');
+
+  const btnToggleBeforeAll = document.querySelectorAll('.btn-toggle-status-before');
+  const btnToggleAfterAll = document.querySelectorAll('.btn-toggle-status-after');
+
+  function setAppointmentMode(mode, showNotification = true) {
+    currentAppointmentMode = mode;
+
+    if (mode === 'before') {
+      desktopStateBefore?.classList.remove('hidden');
+      desktopStateAfter?.classList.add('hidden');
+      mobileStateBefore?.classList.remove('hidden');
+      mobileStateAfter?.classList.add('hidden');
+
+      btnToggleBeforeAll.forEach(btn => {
+        btn.classList.add('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
+        btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      });
+      btnToggleAfterAll.forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
+        btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      });
+
+      if (showNotification) {
+        showToast('Tahap Janji Temu: Menunggu waktu konsultasi (Sebelum Periksa)');
+      }
+    } else {
+      desktopStateBefore?.classList.add('hidden');
+      desktopStateAfter?.classList.remove('hidden');
+      mobileStateBefore?.classList.add('hidden');
+      mobileStateAfter?.classList.remove('hidden');
+
+      btnToggleAfterAll.forEach(btn => {
+        btn.classList.add('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
+        btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      });
+      btnToggleBeforeAll.forEach(btn => {
+        btn.classList.remove('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
+        btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      });
+
+      if (showNotification) {
+        showToast(isBillPaid ? 'Tahap Janji Temu: Pemeriksaan Selesai (Sudah Lunas)' : 'Tahap Janji Temu: Pemeriksaan Selesai (Meminta Pembayaran)');
+      }
+    }
+  }
+
+  btnToggleBeforeAll.forEach(btn => {
+    btn.addEventListener('click', () => setAppointmentMode('before'));
+  });
+
+  btnToggleAfterAll.forEach(btn => {
+    btn.addEventListener('click', () => setAppointmentMode('after'));
+  });
+
+  // Drawer and Modal Elements
+  const billOverlay = document.getElementById('overlay');
+  const billDrawer = document.getElementById('drawer');
+  const cashModal = document.getElementById('modal');
+  const paymentSuccessModal = document.getElementById('payment-success-modal');
+  const closeDrawerBtn = document.getElementById('closeDrawer');
+  const closeModalBtn = document.getElementById('closeModal');
+  const successCloseBtn = document.getElementById('successCloseBtn');
+  const successBackBtn = document.getElementById('successBackBtn');
+  const successPrintBtn = document.getElementById('successPrintBtn');
+  const successAmount = document.getElementById('success-amount');
+  const successAmountPaid = document.getElementById('success-amount-paid');
+  const successItemTreatmentTitle = document.getElementById('success-item-treatment-title');
+  const successItemTreatmentAmount = document.getElementById('success-item-treatment-amount');
+  const successItemCompTitle = document.getElementById('success-item-component-title');
+  const successItemCompAmount = document.getElementById('success-item-component-amount');
+  const successItemMedTitle = document.getElementById('success-item-medicine-title');
+  const successItemMedAmount = document.getElementById('success-item-medicine-amount');
+  const successBodyTreatment = document.getElementById('success-body-treatment');
+  const successBodyComponent = document.getElementById('success-body-component');
+  const successBodyMedicine = document.getElementById('success-body-medicine');
+  const openCashBtn = document.getElementById('openCash');
+  const payBtn = document.getElementById('payBtn');
+  const noteInput = document.getElementById('note');
+  const noteCounter = document.getElementById('cnt');
+  const amountInput = document.getElementById('amount');
+  const chipButtons = document.querySelectorAll('.chip');
+  const btnToggleBreakdown = document.getElementById('btn-toggle-item-breakdown');
+  const itemsBreakdownPanel = document.getElementById('items-breakdown-panel');
+  const viewDetailsText = document.getElementById('view-details-text');
+  const btnShowMoreMethods = document.getElementById('btn-show-more-methods');
+  const morePaymentMethods = document.getElementById('more-payment-methods');
+  const showMoreText = document.getElementById('show-more-text');
+  const showMoreIcon = document.getElementById('show-more-icon');
+
+  function openBillDrawer() {
+    billDrawer?.classList.add('show');
+    billOverlay?.classList.add('show');
+  }
+
+  function closeBillDrawer() {
+    billDrawer?.classList.remove('show');
+    if (!cashModal?.classList.contains('show') && !paymentSuccessModal?.classList.contains('show')) {
+      billOverlay?.classList.remove('show');
+    }
+  }
+
+  function openCashModal() {
+    cashModal?.classList.add('show');
+    billOverlay?.classList.add('show');
+  }
+
+  function closeCashModal() {
+    cashModal?.classList.remove('show');
+    if (!billDrawer?.classList.contains('show') && !paymentSuccessModal?.classList.contains('show')) {
+      billOverlay?.classList.remove('show');
+    }
+  }
+
+  function openPaymentSuccessModal() {
+    const rate = TARIFF_RATES[currentTariffPlan] || TARIFF_RATES.with_medicine;
+
+    // Close any previous drawers/modals
+    billDrawer?.classList.remove('show');
+    cashModal?.classList.remove('show');
+
+    // Update dynamic receipt figures & content according to chosen system rate
+    if (successAmount) successAmount.textContent = rate.formatted;
+    if (successAmountPaid) successAmountPaid.textContent = rate.formatted;
+
+    if (currentTariffPlan === 'with_medicine') {
+      if (successItemTreatmentTitle) successItemTreatmentTitle.textContent = 'Treatment (2)';
+      if (successItemTreatmentAmount) successItemTreatmentAmount.textContent = 'Total: $300.00';
+      if (successBodyTreatment) {
+        successBodyTreatment.innerHTML = `
+          <div><span>Jasa Konsultasi Dr. Saran Mitchell</span><span>$180.00</span></div>
+          <div><span>Terapi Traksi &amp; Fisik Ortopedi</span><span>$120.00</span></div>
+        `;
+      }
+
+      if (successItemCompTitle) successItemCompTitle.textContent = 'Component used (1)';
+      if (successItemCompAmount) successItemCompAmount.textContent = 'Total: $120.00';
+      if (successBodyComponent) {
+        successBodyComponent.innerHTML = `
+          <div><span>Elastic Knee Support Bandage</span><span>$120.00</span></div>
+        `;
+      }
+
+      if (successItemMedTitle) successItemMedTitle.textContent = 'Medicine (1)';
+      if (successItemMedAmount) successItemMedAmount.textContent = 'Total: $15.00';
+      if (successBodyMedicine) {
+        successBodyMedicine.innerHTML = `
+          <div><span>Paket Analgesik &amp; Kalsium Kompleks (10 hari)</span><span>$15.00</span></div>
+        `;
+      }
+    } else {
+      // consultation_only
+      if (successItemTreatmentTitle) successItemTreatmentTitle.textContent = 'Treatment (1)';
+      if (successItemTreatmentAmount) successItemTreatmentAmount.textContent = 'Total: $180.00';
+      if (successBodyTreatment) {
+        successBodyTreatment.innerHTML = `
+          <div><span>Jasa Konsultasi Dr. Saran Mitchell</span><span>$180.00</span></div>
+        `;
+      }
+
+      if (successItemCompTitle) successItemCompTitle.textContent = 'Component used (0)';
+      if (successItemCompAmount) successItemCompAmount.textContent = 'Dilewati ($0.00)';
+      if (successBodyComponent) {
+        successBodyComponent.innerHTML = `
+          <div><span class="italic text-slate-400">Tidak ada komponen medis tambahan</span><span>$0.00</span></div>
+        `;
+      }
+
+      if (successItemMedTitle) successItemMedTitle.textContent = 'Medicine (0)';
+      if (successItemMedAmount) successItemMedAmount.textContent = 'Resep Luar ($0.00)';
+      if (successBodyMedicine) {
+        successBodyMedicine.innerHTML = `
+          <div><span class="italic text-slate-400">Resep obat ditebus mandiri oleh pasien</span><span>$0.00</span></div>
+        `;
+      }
+    }
+
+    billOverlay?.classList.add('show');
+    paymentSuccessModal?.classList.add('show');
+  }
+
+  function closePaymentSuccessModal() {
+    paymentSuccessModal?.classList.remove('show');
+    if (!billDrawer?.classList.contains('show') && !cashModal?.classList.contains('show')) {
+      billOverlay?.classList.remove('show');
+    }
+  }
+
+  window.openPaymentSuccessModal = openPaymentSuccessModal;
+  window.closePaymentSuccessModal = closePaymentSuccessModal;
+
+  function closeAllBillPopups() {
+    billDrawer?.classList.remove('show');
+    cashModal?.classList.remove('show');
+    paymentSuccessModal?.classList.remove('show');
+    billOverlay?.classList.remove('show');
+  }
+
+  // Trigger buttons on Next Appointment Card
+  document.querySelectorAll('.btn-open-bill-drawer').forEach(btn => {
+    btn.addEventListener('click', openBillDrawer);
+  });
+
+  document.querySelectorAll('.btn-trigger-payment').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openBillDrawer();
+      setTimeout(() => {
+        openCashModal();
+      }, 250);
+    });
+  });
+
+  document.querySelectorAll('.btn-open-success-modal').forEach(btn => {
+    btn.addEventListener('click', openPaymentSuccessModal);
+  });
+
+  document.querySelectorAll('.btn-print-receipt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openPaymentSuccessModal();
+      setTimeout(() => {
+        window.print();
+      }, 350);
+    });
+  });
+
+  closeDrawerBtn?.addEventListener('click', closeBillDrawer);
+  closeModalBtn?.addEventListener('click', closeCashModal);
+  successCloseBtn?.addEventListener('click', closePaymentSuccessModal);
+  successBackBtn?.addEventListener('click', closePaymentSuccessModal);
+  successPrintBtn?.addEventListener('click', () => window.print());
+
+  // Accordion inside payment success modal
+  document.querySelectorAll('.success-modal .acc-head').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.acc-item');
+      if (item) {
+        const isOpen = item.classList.toggle('open');
+        btn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+    });
+  });
+
+  billOverlay?.addEventListener('click', () => {
+    if (paymentSuccessModal?.classList.contains('show')) {
+      closePaymentSuccessModal();
+    } else if (cashModal?.classList.contains('show')) {
+      closeCashModal();
+    } else {
+      closeAllBillPopups();
+    }
+  });
+
+  openCashBtn?.addEventListener('click', openCashModal);
+
+  // Keyboard accessibility
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (paymentSuccessModal?.classList.contains('show')) {
+        closePaymentSuccessModal();
+      } else if (cashModal?.classList.contains('show')) {
+        closeCashModal();
+      } else if (billDrawer?.classList.contains('show')) {
+        closeBillDrawer();
+      }
+    }
+  });
+
+  // Note Character Counter
+  if (noteInput && noteCounter) {
+    noteInput.addEventListener('input', (e) => {
+      noteCounter.textContent = `${e.target.value.length}/200`;
+    });
+  }
+
+  // ==========================================================================
+  // CLINIC SYSTEM TARIFF PLAN MANAGEMENT (Determined strictly by clinic rates)
+  // ==========================================================================
+
+  let currentTariffPlan = 'with_medicine'; // 'with_medicine' ($435.00) | 'consultation_only' ($180.00)
+  const TARIFF_RATES = {
+    with_medicine: {
+      amount: 435.00,
+      formatted: '$435.00',
+      serviceDesc: 'Layanan Ortopedi & 1 Resep Obat Klinik',
+      packageName: 'Konsultasi + Beli Obat di Klinik',
+      treatmentTitle: 'Treatment (2)',
+      treatmentDesc: 'Konsultasi Dokter Ortopedi & Terapi Sendi',
+      treatmentAmount: 'Total: $300.00',
+      componentAmount: 'Total: $120.00',
+      medicineAmount: 'Total: $15.00'
+    },
+    consultation_only: {
+      amount: 180.00,
+      formatted: '$180.00',
+      serviceDesc: 'Hanya Konsultasi Dokter Spesialis (Resep Mandiri)',
+      packageName: 'Hanya Konsultasi Dokter Saja',
+      treatmentTitle: 'Treatment (1)',
+      treatmentDesc: 'Konsultasi Dokter Spesialis Ortopedi',
+      treatmentAmount: 'Total: $180.00',
+      componentAmount: 'Dilewati ($0.00)',
+      medicineAmount: 'Resep Luar ($0.00)'
+    }
+  };
+
+  function applyTariffPlan(plan) {
+    currentTariffPlan = plan;
+    const rate = TARIFF_RATES[plan];
+
+    // 1. Update Card displays (Desktop & Mobile)
+    const desktopTotalDisplay = document.getElementById('desktop-total-display');
+    if (desktopTotalDisplay) desktopTotalDisplay.textContent = rate.formatted;
+
+    const mobileTotalDisplay = document.getElementById('mobile-total-display');
+    if (mobileTotalDisplay) mobileTotalDisplay.textContent = rate.formatted;
+
+    const desktopServiceDesc = document.getElementById('desktop-service-desc');
+    if (desktopServiceDesc) desktopServiceDesc.textContent = rate.serviceDesc;
+
+    const desktopPayBtnLabel = document.getElementById('desktop-pay-btn-label');
+    if (desktopPayBtnLabel) desktopPayBtnLabel.textContent = `Bayar Sekarang (${rate.formatted})`;
+
+    // Update Plan Buttons on Card & Drawer
+    document.querySelectorAll('.btn-select-tariff-plan').forEach(btn => {
+      const isSelected = btn.dataset.plan === plan;
+      if (isSelected) {
+        btn.classList.add('border-2', 'border-[#012D68]', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
+        btn.classList.remove('border-slate-200', 'dark:border-slate-700', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      } else {
+        btn.classList.remove('border-2', 'border-[#012D68]', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
+        btn.classList.add('border', 'border-slate-200', 'dark:border-slate-700', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-semibold');
+      }
+    });
+
+    // 2. Update Drawer Displays
+    const dItemTreatmentTitle = document.getElementById('drawer-item-treatment-title');
+    if (dItemTreatmentTitle) dItemTreatmentTitle.textContent = rate.treatmentTitle;
+
+    const dItemTreatmentDesc = document.getElementById('drawer-item-treatment-desc');
+    if (dItemTreatmentDesc) dItemTreatmentDesc.textContent = rate.treatmentDesc;
+
+    const dItemTreatmentAmt = document.getElementById('drawer-item-treatment-amount');
+    if (dItemTreatmentAmt) dItemTreatmentAmt.textContent = rate.treatmentAmount;
+
+    const dItemCompAmt = document.getElementById('drawer-item-component-amount');
+    if (dItemCompAmt) dItemCompAmt.textContent = rate.componentAmount;
+
+    const dItemMedAmt = document.getElementById('drawer-item-medicine-amount');
+    if (dItemMedAmt) dItemMedAmt.textContent = rate.medicineAmount;
+
+    const dSubtotal = document.getElementById('drawer-subtotal-display');
+    if (dSubtotal) dSubtotal.textContent = rate.formatted;
+
+    const dTotal = document.getElementById('drawer-total-display');
+    if (dTotal) dTotal.textContent = rate.formatted;
+
+    // 3. Update Modal Displays
+    const modalTotalDisplay = document.getElementById('modal-total-display');
+    if (modalTotalDisplay) modalTotalDisplay.textContent = rate.formatted;
+
+    if (payBtn) {
+      const spanEl = payBtn.querySelector('span');
+      if (spanEl) spanEl.textContent = `Pay ${rate.formatted}`;
+    }
+
+    // Modal Radio cards highlight
+    document.querySelectorAll('.modal-tariff-card').forEach(card => {
+      const radio = card.querySelector('input[type="radio"]');
+      const isCardPlan = card.dataset.plan === plan;
+      if (radio) radio.checked = isCardPlan;
+
+      if (isCardPlan) {
+        card.classList.add('border-2', 'border-[#012D68]', 'bg-blue-50/70', 'dark:bg-blue-950/40');
+        card.classList.remove('border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900');
+      } else {
+        card.classList.remove('border-2', 'border-[#012D68]', 'bg-blue-50/70', 'dark:bg-blue-950/40');
+        card.classList.add('border', 'border-slate-200', 'dark:border-slate-700', 'bg-white', 'dark:bg-slate-900');
+      }
+    });
+  }
+
+  // Bind click handlers for tariff plan selection across Card & Drawer
+  document.querySelectorAll('.btn-select-tariff-plan').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const plan = btn.dataset.plan;
+      if (plan) {
+        applyTariffPlan(plan);
+        showToast(`Tarif sistem diatur: ${TARIFF_RATES[plan].packageName} (${TARIFF_RATES[plan].formatted})`);
+      }
+    });
+  });
+
+  // Bind click handlers for Modal tariff cards
+  document.querySelectorAll('.modal-tariff-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const plan = card.dataset.plan;
+      if (plan) {
+        applyTariffPlan(plan);
+        showToast(`Tarif sistem diatur: ${TARIFF_RATES[plan].packageName} (${TARIFF_RATES[plan].formatted})`);
+      }
+    });
+  });
+
+  // Item breakdown toggle
+  btnToggleBreakdown?.addEventListener('click', () => {
+    const isHidden = itemsBreakdownPanel?.classList.toggle('hidden');
+    if (viewDetailsText) {
+      viewDetailsText.textContent = isHidden ? 'View Details' : 'Hide Details';
+    }
+  });
+
+  // Show more payment methods toggle
+  btnShowMoreMethods?.addEventListener('click', () => {
+    const isHidden = morePaymentMethods?.classList.toggle('hidden');
+    if (showMoreText) {
+      showMoreText.textContent = isHidden ? 'Show More' : 'Hide More';
+    }
+    if (showMoreIcon) {
+      const useEl = showMoreIcon.querySelector('use');
+      if (useEl) {
+        useEl.setAttribute('href', isHidden ? '#i-down' : '#i-up2');
+      }
+    }
+  });
+
+  // Pay Confirmation Process
+  payBtn?.addEventListener('click', () => {
+    const rate = TARIFF_RATES[currentTariffPlan] || TARIFF_RATES.with_medicine;
+    const originalText = payBtn.innerHTML;
+    payBtn.disabled = true;
+    payBtn.innerHTML = `
+      <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+      </svg>
+      <span>Memproses ${rate.formatted}...</span>
+    `;
+
+    setTimeout(() => {
+      isBillPaid = true;
+      payBtn.disabled = false;
+      payBtn.innerHTML = originalText;
+
+      closeAllBillPopups();
+
+      // Update Desktop Elements
+      const dBadge = document.getElementById('desktop-unpaid-badge');
+      if (dBadge) {
+        dBadge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+        dBadge.textContent = 'PAID / LUNAS';
+      }
+      const dStatusPill = document.getElementById('desktop-status-pill');
+      if (dStatusPill) {
+        dStatusPill.className = 'font-bold text-emerald-600 dark:text-emerald-400';
+        dStatusPill.textContent = `Lunas: ${rate.packageName}`;
+      }
+      document.getElementById('desktop-action-buttons-unpaid')?.classList.add('hidden');
+      document.getElementById('desktop-action-buttons-paid')?.classList.remove('hidden');
+
+      // Update Mobile Elements
+      const mBadge = document.getElementById('mobile-unpaid-badge');
+      if (mBadge) {
+        mBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
+        mBadge.textContent = 'PAID';
+      }
+      const mStatusPill = document.getElementById('mobile-status-pill');
+      if (mStatusPill) {
+        mStatusPill.className = 'font-bold text-emerald-600 dark:text-emerald-400';
+        mStatusPill.textContent = 'Lunas';
+      }
+      document.getElementById('mobile-action-buttons-unpaid')?.classList.add('hidden');
+      document.getElementById('mobile-action-buttons-paid')?.classList.remove('hidden');
+
+      // Update Drawer Badge & Paid Actions
+      const drawerBadge = document.getElementById('drawer-bill-badge');
+      if (drawerBadge) {
+        drawerBadge.className = 'badge paid';
+        drawerBadge.textContent = 'PAID';
+      }
+      const drawerPaidActions = document.getElementById('drawer-paid-actions');
+      const drawerUnpaidActions = document.getElementById('drawer-unpaid-actions');
+      if (drawerPaidActions) drawerPaidActions.classList.remove('hidden');
+      if (drawerUnpaidActions) drawerUnpaidActions.classList.add('hidden');
+
+      showToast(`Pembayaran berhasil diproses! Tagihan #BILL00124 (${rate.packageName}) sebesar ${rate.formatted} telah lunas.`);
+
+      // Automatically display the Payment Success Receipt Modal (Zendenta Adapted)
+      setTimeout(() => {
+        openPaymentSuccessModal();
+      }, 300);
+    }, 600);
+  });
+
+  window.printInvoiceReceipt = function() {
+    openPaymentSuccessModal();
+    showToast('Mencetak kuitansi resmi Klinik Maristella #BILL00124...');
+    setTimeout(() => {
+      window.print();
+    }, 400);
+  };
 });
