@@ -16,10 +16,14 @@ class HomeViewTest extends TestCase
         $response->assertOk();
         $response->assertViewIs('home');
         $response->assertViewHasAll(['user', 'nextAppointment', 'categories', 'doctors']);
-        $response->assertSee('Gabe Medica');
+        $response->assertSee('Klinik Maristella');
         $response->assertSee('What’s on your health today?');
         $response->assertSee('Dr. Saran Mitchell');
         $response->assertSee('Dr. Anaya Kapoor');
         $response->assertSee('Book a Session');
+        $response->assertSee('Pendaftaran Sesi Konsultasi');
+        $response->assertSee('Gejala / Keluhan Utama');
+        $response->assertSee('Sudah Berapa Lama Dirasakan?');
+        $response->assertSee('Konfirmasi Pemesanan');
     }
 }

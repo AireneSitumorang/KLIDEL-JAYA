@@ -1,4 +1,4 @@
-// Gabe Medica Application Core JS
+// Klinik Maristella Application Core JS
 
 document.addEventListener('DOMContentLoaded', () => {
   // Elements
@@ -239,13 +239,222 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   setupTimeSlots('.slots-container');
 
-  // Booking Buttons
+  // Booking Registration Modal Elements
+  const bookingModalBackdrop = document.getElementById('booking-modal-backdrop');
+  const bookingModal = document.getElementById('booking-modal');
+  const btnCloseModal = document.getElementById('btn-close-modal');
+  const btnCancelBooking = document.getElementById('btn-cancel-booking');
+  const btnConfirmBooking = document.getElementById('btn-confirm-booking');
+  const modalDocImg = document.getElementById('modal-doc-img');
+  const modalDocInitials = document.getElementById('modal-doc-initials');
+  const modalDocName = document.getElementById('modal-doc-name');
+  const modalDocRating = document.getElementById('modal-doc-rating');
+  const modalDocSpecialty = document.getElementById('modal-doc-specialty');
+  const modalDocSchedule = document.getElementById('modal-doc-schedule');
+  const modalDocPrice = document.getElementById('modal-doc-price');
+
+  const regPatientName = document.getElementById('reg-patient-name');
+  const regPatientPhone = document.getElementById('reg-patient-phone');
+  const regSymptoms = document.getElementById('reg-symptoms');
+  const symptomsError = document.getElementById('symptoms-error');
+  const regDuration = document.getElementById('reg-duration');
+  const regSeverity = document.getElementById('reg-severity');
+  const regNotes = document.getElementById('reg-notes');
+  const quickSymptomsChips = document.querySelectorAll('#quick-symptoms-chips .symptom-chip');
+  const durationPills = document.querySelectorAll('#duration-selector .duration-pill');
+  const severityPills = document.querySelectorAll('#severity-selector .severity-pill');
+
+  // Open & Close Booking Intake Modal
+  function openBookingModal() {
+    if (!currentDoctor) return;
+
+    // Sync modal doctor info
+    if (modalDocImg) {
+      if (currentDoctor.image) {
+        modalDocImg.src = currentDoctor.image;
+        modalDocImg.alt = currentDoctor.name;
+        modalDocImg.style.display = 'block';
+        if (modalDocInitials) modalDocInitials.style.display = 'none';
+      } else {
+        modalDocImg.style.display = 'none';
+        if (modalDocInitials) {
+          modalDocInitials.textContent = currentDoctor.initials;
+          modalDocInitials.style.display = 'block';
+        }
+      }
+    }
+    if (modalDocName) modalDocName.textContent = currentDoctor.name;
+    if (modalDocRating) modalDocRating.textContent = currentDoctor.rating;
+    if (modalDocSpecialty) modalDocSpecialty.textContent = currentDoctor.specialty;
+    if (modalDocSchedule) modalDocSchedule.textContent = `${selectedDayName} ${selectedDate} · ${selectedTime}`;
+    if (modalDocPrice) modalDocPrice.textContent = currentDoctor.price;
+
+    // Clear error
+    if (symptomsError) symptomsError.classList.add('hidden');
+    if (regSymptoms) regSymptoms.classList.remove('!border-rose-500');
+
+    // Display modal
+    if (bookingModalBackdrop) {
+      bookingModalBackdrop.classList.remove('hidden');
+      // slight delay for transition
+      requestAnimationFrame(() => {
+        bookingModalBackdrop.classList.add('open');
+      });
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeBookingModal() {
+    if (bookingModalBackdrop) {
+      bookingModalBackdrop.classList.remove('open');
+      setTimeout(() => {
+        bookingModalBackdrop.classList.add('hidden');
+        document.body.style.overflow = '';
+      }, 200);
+    }
+  }
+
+  // Quick symptom chips handling (toggle/append to textarea)
+  quickSymptomsChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const sym = chip.dataset.symptom;
+      if (!regSymptoms) return;
+
+      let currentVal = regSymptoms.value.trim();
+      if (!currentVal) {
+        regSymptoms.value = sym;
+        chip.classList.add('added');
+      } else if (!currentVal.toLowerCase().includes(sym.toLowerCase())) {
+        regSymptoms.value = `${currentVal}, ${sym}`;
+        chip.classList.add('added');
+      } else {
+        // Remove if clicked again
+        const regex = new RegExp(`(^|,\\s*)${sym}(,\\s*|$)`, 'i');
+        regSymptoms.value = currentVal.replace(regex, '$1').replace(/(^,\s*|,\s*$)/, '').trim();
+        chip.classList.remove('added');
+      }
+
+      // Clear error
+      if (symptomsError) symptomsError.classList.add('hidden');
+      if (regSymptoms) regSymptoms.classList.remove('!border-rose-500');
+    });
+  });
+
+  // Duration selection pills
+  durationPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      durationPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      if (regDuration) regDuration.value = pill.dataset.duration;
+    });
+  });
+
+  // Severity selection pills
+  severityPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      severityPills.forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      if (regSeverity) regSeverity.value = pill.dataset.severity;
+    });
+  });
+
+  // Modal Close Events
+  if (btnCloseModal) btnCloseModal.addEventListener('click', closeBookingModal);
+  if (btnCancelBooking) btnCancelBooking.addEventListener('click', closeBookingModal);
+  if (bookingModalBackdrop) {
+    bookingModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === bookingModalBackdrop) {
+        closeBookingModal();
+      }
+    });
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && bookingModalBackdrop && bookingModalBackdrop.classList.contains('open')) {
+      closeBookingModal();
+    }
+  });
+
+  // Form submission and validation
+  if (btnConfirmBooking) {
+    btnConfirmBooking.addEventListener('click', () => {
+      const symptomsVal = regSymptoms ? regSymptoms.value.trim() : '';
+      if (!symptomsVal) {
+        if (symptomsError) symptomsError.classList.remove('hidden');
+        if (regSymptoms) {
+          regSymptoms.classList.add('!border-rose-500');
+          regSymptoms.focus();
+        }
+        return;
+      }
+
+      const patientName = regPatientName ? regPatientName.value.trim() : 'Pasien';
+      const durationVal = regDuration ? regDuration.value : '1 - 3 Hari';
+      const severityVal = regSeverity ? regSeverity.value : 'Sedang';
+
+      // Visual feedback loading state
+      const originalText = btnConfirmBooking.innerHTML;
+      btnConfirmBooking.disabled = true;
+      btnConfirmBooking.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span>Memproses...</span>
+      `;
+
+      setTimeout(() => {
+        // Update "Next Appointment" cards in UI to reflect newly registered appointment
+        const nextApptDesktop = document.querySelector('.next-appt-card');
+        if (nextApptDesktop && currentDoctor) {
+          const docImg = nextApptDesktop.querySelector('img');
+          const docName = nextApptDesktop.querySelector('b');
+          const docSpecialty = nextApptDesktop.querySelectorAll('small')[1];
+          const docDateTime = nextApptDesktop.querySelectorAll('small')[2];
+
+          if (docImg && currentDoctor.image) docImg.src = currentDoctor.image;
+          if (docName) docName.textContent = currentDoctor.name;
+          if (docSpecialty) docSpecialty.textContent = currentDoctor.specialty;
+          if (docDateTime) docDateTime.textContent = `${selectedDayName} ${selectedDate}, 2026 · ${selectedTime}`;
+        }
+
+        const nextApptMobile = document.querySelector('.stacked-card');
+        if (nextApptMobile && currentDoctor) {
+          const mDocImg = nextApptMobile.querySelector('img');
+          const mDocName = nextApptMobile.querySelector('b');
+          const mDocSpecialty = nextApptMobile.querySelectorAll('small')[0];
+          const mDocDateTime = nextApptMobile.querySelectorAll('small')[1];
+
+          if (mDocImg && currentDoctor.image) mDocImg.src = currentDoctor.image;
+          if (mDocName) mDocName.textContent = currentDoctor.name;
+          if (mDocSpecialty) mDocSpecialty.textContent = currentDoctor.specialty;
+          if (mDocDateTime) mDocDateTime.textContent = `${selectedDayName} ${selectedDate}, 2026 · ${selectedTime}`;
+        }
+
+        // Show Rich Success Toast
+        showToast(`Pendaftaran Berhasil! Sesi dengan ${currentDoctor.name} dijadwalkan pada ${selectedDayName} ${selectedDate} · ${selectedTime} (${durationVal})`);
+
+        // Reset button
+        btnConfirmBooking.disabled = false;
+        btnConfirmBooking.innerHTML = originalText;
+
+        // Reset inputs
+        if (regSymptoms) regSymptoms.value = '';
+        if (regNotes) regNotes.value = '';
+        quickSymptomsChips.forEach(c => c.classList.remove('added'));
+
+        // Close modal and mobile sheet
+        closeBookingModal();
+        closeMobileSheet();
+      }, 500);
+    });
+  }
+
+  // Booking Buttons Click -> Open Registration Modal
   const bookBtns = document.querySelectorAll('.btn-book-session');
   bookBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      if (!currentDoctor) return;
-      showToast(`Sesi Berhasil Dipesan! ${currentDoctor.name} · ${selectedDayName} ${selectedDate} · ${selectedTime}`);
-      closeMobileSheet();
+      openBookingModal();
     });
   });
 

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kalender Konsultasi Dokter — Gabe Medica</title>
-<link rel="icon" type="image/png" href="{{ asset('images/gabe-medica-icon.png') }}">
+<title>Kalender Konsultasi Dokter — Klinik Maristella</title>
+<link rel="icon" type="image/png" href="{{ asset('images/maristella-icon.png') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     --text-tertiary: #94a3b8;
     --icon-default: #64748b;
     
-    /* Gabe Medica Navy Brand Colors */
+    /* Klinik Maristella Navy Brand Colors */
     --brand-primary: #012D68;
     --brand-primary-hover: #083E88;
     --brand-primary-tint: #EFF6FF;
@@ -67,32 +67,42 @@
   svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
   :focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
 
-  .app { display: flex; min-height: 100vh; background: var(--bg-page); }
+  html { scrollbar-gutter: stable; }
 
-  /* ===== Sidebar ===== */
+  .app {
+    display: flex;
+    min-height: 100vh;
+    background: var(--bg-page);
+    max-width: 1440px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* ===== Sidebar (Matching Patient Home Design - Gambar 1) ===== */
   .sidebar {
-    width: var(--sidebar-w);
+    width: 240px;
     flex-shrink: 0;
     border-right: 1px solid var(--border);
-    padding: 16px 12px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
+    gap: 6px;
     background: var(--bg-page);
     position: sticky;
     top: 0;
     height: 100vh;
+    box-sizing: border-box;
+    z-index: 20;
   }
   .brand {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 4px 6px 18px;
-    color: var(--text-primary);
-    font-weight: 700;
-    font-size: 14px;
+    gap: 10px;
+    margin-bottom: 24px;
+    padding: 0;
   }
   .brand img {
-    height: 32px;
+    height: 36px;
     width: auto;
     object-fit: contain;
   }
@@ -108,6 +118,106 @@
     text-transform: uppercase;
     letter-spacing: 0.5px;
   }
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+  }
+  .sidebar-nav .nav-item,
+  .sidebar-nav button.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    text-align: left;
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease;
+    font-family: inherit;
+  }
+  .sidebar-nav .nav-item svg,
+  .sidebar-nav button.nav-item svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+    color: var(--text-secondary);
+    transition: color 0.15s ease;
+  }
+  .sidebar-nav .nav-item:hover,
+  .sidebar-nav button.nav-item:hover {
+    background-color: rgba(239, 246, 255, 0.6);
+    color: var(--brand-primary);
+  }
+  .sidebar-nav .nav-item:hover svg,
+  .sidebar-nav button.nav-item:hover svg {
+    color: var(--brand-primary);
+  }
+  .sidebar-nav .nav-item.active,
+  .sidebar-nav button.nav-item.active {
+    background-color: var(--brand-primary-tint);
+    color: var(--brand-primary);
+    font-weight: 600;
+  }
+  .sidebar-nav .nav-item.active svg,
+  .sidebar-nav button.nav-item.active svg {
+    color: var(--brand-primary);
+  }
+  .sidebar-nav .nav-item .active-indicator {
+    display: block;
+    position: absolute;
+    left: -20px;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    border-radius: 0 4px 4px 0;
+    background-color: var(--brand-primary);
+  }
+  .sidebar-nav .nav-item.nav-item-logout {
+    color: #DC2626 !important;
+    font-weight: 500;
+  }
+  .sidebar-nav .nav-item.nav-item-logout svg {
+    color: #DC2626 !important;
+  }
+  .sidebar-nav .nav-item.nav-item-logout:hover {
+    background-color: #FEF2F2 !important;
+    color: #B91C1C !important;
+  }
+  .sidebar-nav .nav-item.nav-item-logout:hover svg {
+    color: #B91C1C !important;
+  }
+  .sidebar-nav .nav-item.nav-item-admin {
+    color: #7E22CE !important;
+    background-color: #FAF5FF;
+  }
+  .sidebar-nav .nav-item.nav-item-admin svg {
+    color: #7E22CE !important;
+  }
+  .sidebar-nav .nav-item.nav-item-admin:hover {
+    background-color: #F3E8FF !important;
+  }
+  .sidebar-nav .nav-item.nav-item-login {
+    color: var(--brand-primary);
+    background-color: var(--brand-primary-tint);
+    font-weight: 600;
+  }
+
+  /* Admin old nav compatibility */
   .nav { display: flex; flex-direction: column; gap: 3px; }
   .nav a, .nav button.item {
     display: flex;
@@ -127,6 +237,64 @@
   .nav a.active { background: var(--brand-primary-tint); color: var(--brand-primary); font-weight: 700; }
   .nav a.active svg { color: var(--brand-primary); }
   hr.divider { border: 0; border-top: 1px solid var(--border); margin: 12px 0; }
+  
+  /* Floating Bottom Navigation on mobile */
+  .floating-bottom-nav {
+    display: none;
+  }
+  @media (max-width: 860px) {
+    .floating-bottom-nav {
+      position: fixed;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 20px;
+      display: flex;
+      gap: 8px;
+      background: #ffffff;
+      padding: 6px 12px;
+      border-radius: 999px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+      border: 1px solid var(--border);
+      z-index: 40;
+    }
+    .floating-bottom-nav a,
+    .floating-bottom-nav button {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+    .floating-bottom-nav a svg,
+    .floating-bottom-nav button svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.75;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .floating-bottom-nav a:hover,
+    .floating-bottom-nav button:hover {
+      color: var(--brand-primary);
+      background: var(--brand-primary-tint);
+    }
+    .floating-bottom-nav a.active,
+    .floating-bottom-nav button.active {
+      background: var(--brand-primary) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 10px rgba(1, 45, 104, 0.3);
+    }
+    .floating-bottom-nav a.active svg,
+    .floating-bottom-nav button.active svg {
+      color: #ffffff !important;
+    }
+  }
   
   .spacer { flex: 1; }
   .user {
@@ -856,11 +1024,12 @@
 <!-- SVG Icons Sprite -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
     <symbol id="i-dash" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
-    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></symbol>
     <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
     <symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h6M9 17h6"/></symbol>
+    <symbol id="i-set" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></symbol>
     <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
     <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4 10 14M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
     <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></symbol>
@@ -880,54 +1049,100 @@
 </svg>
 
 <div class="app">
-  <!-- ========== SIDEBAR (Requirement 1: Sama Bentuknya) ========== -->
+  <!-- ========== SIDEBAR (Gambar 1 untuk Pasien) ========== -->
   <aside class="sidebar">
     <div class="brand">
-      <a href="{{ route('home') }}" title="Gabe Medica">
-        <img src="{{ asset('images/gabe-medica-logo.png') }}" alt="Gabe Medica" />
+      <a href="{{ route('home') }}" title="Klinik Maristella">
+        <img src="{{ asset('images/maristella-logo-horizontal.png') }}" alt="Klinik Maristella" />
       </a>
-      <span id="sidebarRoleBadge" class="role-indicator-badge">Admin</span>
+      <span id="sidebarRoleBadge" class="role-indicator-badge" style="{{ ($role ?? 'admin') === 'patient' ? 'display: none;' : '' }}">Admin</span>
     </div>
 
-    <nav class="nav" aria-label="Navigasi utama">
-      <a href="{{ route('home') }}">
+    <!-- Patient Navigation (Sesuai Gambar 1) -->
+    <nav id="patientSidebarNav" class="sidebar-nav" aria-label="Navigasi Utama" style="{{ ($role ?? 'admin') === 'patient' ? '' : 'display: none;' }}">
+      <!-- Beranda -->
+      <a href="{{ route('home') }}" class="nav-item" title="Beranda">
         <svg><use href="#i-home"/></svg>
-        <span>Beranda Pasien</span>
+        <span>Beranda</span>
       </a>
-      <a href="javascript:void(0)" class="active" aria-current="page">
+
+      <!-- Jadwal (Active) -->
+      <a href="{{ route('calendar') }}" class="nav-item active" aria-current="page" title="Jadwal">
+        <span class="active-indicator"></span>
         <svg><use href="#i-cal"/></svg>
-        <span>Jadwal Dokter</span>
+        <span>Jadwal</span>
       </a>
-      <a href="{{ route('home') }}#doctors-grid">
-        <svg><use href="#i-user"/></svg>
-        <span>Daftar Dokter</span>
+
+      <!-- Rekam Medis -->
+      <a href="{{ route('rekam-medis') }}" class="nav-item" title="Rekam Medis">
+        <svg><use href="#i-doc"/></svg>
+        <span>Rekam Medis</span>
       </a>
+
+      <!-- Pengaturan -->
+      <button type="button" class="nav-item" onclick="showToast('Membuka Pengaturan...')" title="Pengaturan">
+        <svg><use href="#i-set"/></svg>
+        <span>Pengaturan</span>
+      </button>
+
+      @auth
+        @if (auth()->user()->isAdmin())
+          <a href="{{ route('admin.dashboard') }}" class="nav-item nav-item-admin" title="Portal Admin">
+            <svg><use href="#i-shield"/></svg>
+            <span>Portal Admin</span>
+          </a>
+        @endif
+
+        <!-- Keluar -->
+        <form action="{{ route('logout') }}" method="POST" style="width: 100%; margin: 0;">
+          @csrf
+          <button type="submit" class="nav-item nav-item-logout" title="Keluar">
+            <svg><use href="#i-logout"/></svg>
+            <span>Keluar</span>
+          </button>
+        </form>
+      @else
+        <a href="{{ route('login') }}" class="nav-item nav-item-login" title="Masuk / Login">
+          <svg><use href="#i-logout"/></svg>
+          <span>Masuk / Login</span>
+        </a>
+      @endauth
     </nav>
 
-    <hr class="divider">
+    <!-- Admin Navigation (Hanya tampil jika role Admin) -->
+    <div id="adminSidebarNav" style="{{ ($role ?? 'admin') === 'patient' ? 'display: none;' : '' }}">
+      <nav class="nav" aria-label="Navigasi admin">
+        <a href="javascript:void(0)" class="active" aria-current="page">
+          <svg><use href="#i-cal"/></svg>
+          <span>Jadwal Dokter</span>
+        </a>
+      </nav>
 
-    <div class="spacer"></div>
-
-    <!-- Active User Card -->
-    <div class="user">
-      <div class="avatar" id="sidebarAvatar">
-        {{ $user['initials'] ?? 'AL' }}
-        <i class="status"></i>
-      </div>
-      <div>
-        <strong id="sidebarUserName">{{ $user['name'] ?? 'Amélie Laurent' }}</strong>
-        <small id="sidebarUserRole">{{ $user['role'] ?? 'Administrator' }}</small>
-      </div>
+      <hr class="divider">
     </div>
-    
-    <!-- Logout / Back Button -->
-    <form action="{{ route('logout') }}" method="POST" class="mt-2">
-      @csrf
-      <button type="submit" class="logout-btn">
-        <svg style="width:14px;height:14px"><use href="#i-logout"/></svg>
-        <span>Keluar Portal</span>
-      </button>
-    </form>
+
+    <!-- Active User Card (Hanya tampil jika role Admin) -->
+    <div id="adminUserCard" style="{{ ($role ?? 'admin') === 'patient' ? 'display: none;' : '' }}; margin-top: auto;">
+      <div class="user">
+        <div class="avatar" id="sidebarAvatar">
+          {{ $user['initials'] ?? 'AL' }}
+          <i class="status"></i>
+        </div>
+        <div>
+          <strong id="sidebarUserName">{{ $user['name'] ?? 'Amélie Laurent' }}</strong>
+          <small id="sidebarUserRole">{{ $user['role'] ?? 'Administrator' }}</small>
+        </div>
+      </div>
+      
+      <!-- Logout / Back Button -->
+      <form action="{{ route('logout') }}" method="POST" class="mt-2">
+        @csrf
+        <button type="submit" class="logout-btn">
+          <svg style="width:14px;height:14px"><use href="#i-logout"/></svg>
+          <span>Keluar Portal</span>
+        </button>
+      </form>
+    </div>
   </aside>
 
   <!-- ========== MAIN CONTENT ========== -->
@@ -937,24 +1152,12 @@
       <div class="crumbs">
         <svg><use href="#i-home"/></svg>
         <svg style="width:12px"><use href="#i-cr"/></svg>
-        <span>Gabe Medica</span>
+        <span>Klinik Maristella</span>
         <svg style="width:12px"><use href="#i-cr"/></svg>
-        <span class="cur" id="crumbModeTitle">Kalender (Admin)</span>
+        <span class="cur" id="crumbModeTitle">{{ ($role ?? 'admin') === 'patient' ? 'Jadwal Konsultasi Dokter' : 'Kalender (Admin)' }}</span>
       </div>
 
       <div class="topbar-actions">
-        <!-- Interactive View Switcher (Admin vs Pasien) -->
-        <div class="mode-switcher" title="Ganti tampilan antara Mode Pasien dan Mode Admin">
-          <button id="modePatientBtn" class="mode-btn" onclick="setCalendarRole('patient')">
-            <svg style="width:13px;height:13px"><use href="#i-stethoscope"/></svg>
-            <span>Mode Pasien</span>
-          </button>
-          <button id="modeAdminBtn" class="mode-btn active" onclick="setCalendarRole('admin')">
-            <svg style="width:13px;height:13px"><use href="#i-shield"/></svg>
-            <span>Mode Admin</span>
-          </button>
-        </div>
-
         <!-- Quick Search -->
         <label class="search">
           <svg><use href="#i-search"/></svg>
@@ -964,14 +1167,11 @@
       </div>
     </div>
 
-    <!-- Heading & Role Status -->
+    <!-- Heading -->
     <div class="heading-wrapper">
       <div>
         <h1>Kalender Jadwal Dokter</h1>
-        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Kelola dan tinjau ketersediaan jam praktik konsultasi di klinik Gabe Medica.</p>
-      </div>
-      <div id="roleBadgeIndicator" class="view-badge-indicator">
-        Mode: Administrator Klinik
+        <p style="font-size:12px;color:var(--text-tertiary);margin-top:2px;">Kelola dan tinjau ketersediaan jam praktik konsultasi di Klinik Maristella.</p>
       </div>
     </div>
 
@@ -1014,7 +1214,7 @@
           <!-- Action Button (Booking Jadwal) -->
           <button id="btnOpenBookingModal" class="btn primary" onclick="openBookingModal()">
             <svg><use href="#i-plus"/></svg>
-            <span id="btnActionText">+ Booking Jadwal</span>
+            <span id="btnActionText">Booking Jadwal Dokter</span>
           </button>
         </div>
       </div>
@@ -1215,7 +1415,7 @@ const DEFAULT_BOOKINGS = [
 /* Ambil data dari localStorage agar perubahan sesi bertahan secara lokal tanpa DB */
 function loadBookings() {
   try {
-    const saved = localStorage.getItem('gabe_medica_calendar_bookings');
+    const saved = localStorage.getItem('maristella_calendar_bookings') || localStorage.getItem('gabe_medica_calendar_bookings');
     if (saved) return JSON.parse(saved);
   } catch (e) {
     console.error('Error loading bookings from localStorage', e);
@@ -1225,7 +1425,7 @@ function loadBookings() {
 
 function saveBookings(data) {
   try {
-    localStorage.setItem('gabe_medica_calendar_bookings', JSON.stringify(data));
+    localStorage.setItem('maristella_calendar_bookings', JSON.stringify(data));
   } catch (e) {
     console.error('Error saving bookings to localStorage', e);
   }
@@ -1442,34 +1642,47 @@ function cancelBooking(id) {
 }
 
 /* ---------- Switch Role Pasien / Admin ---------- */
-function setCalendarRole(role) {
+function setCalendarRole(role, isManualSwitch = false) {
   currentRole = role;
 
-  // Toggle button active
-  document.getElementById("modePatientBtn").classList.toggle("active", role === 'patient');
-  document.getElementById("modeAdminBtn").classList.toggle("active", role === 'admin');
-
-  // Update Header Badges
-  const badgeTitle = role === 'admin' ? 'Kalender (Admin)' : 'Kalender (Pasien)';
-  document.getElementById("crumbModeTitle").textContent = badgeTitle;
-  
-  const indicator = document.getElementById("roleBadgeIndicator");
-  indicator.textContent = role === 'admin' ? 'Mode: Administrator Klinik' : 'Mode: Pasien / Publik';
-  indicator.style.color = role === 'admin' ? '#012D68' : '#047857';
-  indicator.style.background = role === 'admin' ? '#EFF6FF' : '#ECFDF5';
-  indicator.style.borderColor = role === 'admin' ? '#BFDBFE' : '#A7F3D0';
+  // Toggle button active if switcher exists
+  // Update Header Title
+  const badgeTitle = role === 'admin' ? 'Kalender (Admin)' : 'Jadwal Konsultasi Dokter';
+  const crumbTitle = document.getElementById("crumbModeTitle");
+  if (crumbTitle) crumbTitle.textContent = badgeTitle;
 
   // Update Sidebar
-  document.getElementById("sidebarRoleBadge").textContent = role === 'admin' ? 'Admin' : 'Pasien';
-  document.getElementById("sidebarRoleBadge").style.color = role === 'admin' ? '#012D68' : '#047857';
-  document.getElementById("sidebarRoleBadge").style.background = role === 'admin' ? '#EFF6FF' : '#ECFDF5';
+  const sidebarRoleBadge = document.getElementById("sidebarRoleBadge");
+  if (sidebarRoleBadge) {
+    sidebarRoleBadge.style.display = role === 'admin' ? 'inline-block' : 'none';
+  }
+
+  const patientSidebarNav = document.getElementById("patientSidebarNav");
+  if (patientSidebarNav) {
+    patientSidebarNav.style.display = role === 'patient' ? 'flex' : 'none';
+  }
+
+  const adminSidebarNav = document.getElementById("adminSidebarNav");
+  if (adminSidebarNav) {
+    adminSidebarNav.style.display = role === 'admin' ? 'block' : 'none';
+  }
+
+  const adminUserCard = document.getElementById("adminUserCard");
+  if (adminUserCard) {
+    adminUserCard.style.display = role === 'admin' ? 'block' : 'none';
+  }
   
   // Action button text
-  document.getElementById("btnActionText").textContent = role === 'admin' ? '+ Tambah Jadwal Pasien' : '+ Booking Jadwal Dokter';
+  const btnActionText = document.getElementById("btnActionText");
+  if (btnActionText) {
+    btnActionText.textContent = role === 'admin' ? 'Tambah Jadwal Pasien' : 'Booking Jadwal Dokter';
+  }
 
   // Render ulang events & detail
   renderEvents();
-  showToast(`Beralih ke tampilan ${role === 'admin' ? 'Administrator' : 'Pasien'}.`);
+  if (isManualSwitch) {
+    showToast(`Beralih ke tampilan ${role === 'admin' ? 'Administrator' : 'Pasien'}.`);
+  }
 }
 
 /* ---------- Filter Dokter (Requirement 3) ---------- */
@@ -1725,7 +1938,24 @@ window.addEventListener("DOMContentLoaded", () => {
   updateDateHeader();
   renderMiniCalendar();
   setCalendarRole(currentRole);
+  if (new URLSearchParams(window.location.search).has('openBooking')) {
+    openBookingModal();
+  }
 });
 </script>
+
+<!-- Floating Bottom Navigation on Mobile -->
+<nav class="floating-bottom-nav" aria-label="Navigasi Bawah">
+  <button class="active" aria-label="Jadwal">
+    <svg><use href="#i-cal"/></svg>
+  </button>
+  <a href="{{ route('home') }}" aria-label="Beranda">
+    <svg><use href="#i-home"/></svg>
+  </a>
+  <button aria-label="Pengaturan" onclick="showToast('Tab Pengaturan...')">
+    <svg><use href="#i-set"/></svg>
+  </button>
+</nav>
+
 </body>
 </html>

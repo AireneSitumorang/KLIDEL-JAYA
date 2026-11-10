@@ -7,17 +7,18 @@ use Illuminate\Contracts\View\View;
 class HomeController extends Controller
 {
     /**
-     * Display the Gabe Medica Home / Dashboard view.
+     * Display the Klinik Maristella Home / Dashboard view.
      */
     public function index(): View
     {
         $authUser = auth()->user();
         $user = [
             'name' => $authUser?->name ?? 'Rina Anggraini',
-            'role' => $authUser ? ($authUser->isAdmin() ? 'Administrator' : 'Pasien') : 'Pasien',
+            'role' => $authUser ? ($authUser->isAdmin() ? 'Administrator' : ($authUser->isDoctor() ? 'Dokter Spesialis' : 'Pasien')) : 'Pasien',
             'initials' => $authUser ? strtoupper(substr($authUser->name, 0, 1).substr(trim(strstr($authUser->name, ' ') ?: ''), 0, 1)) : 'RA',
             'is_logged_in' => auth()->check(),
             'is_admin' => $authUser?->isAdmin() ?? false,
+            'is_doctor' => $authUser?->isDoctor() ?? false,
         ];
 
         $nextAppointment = [
@@ -106,6 +107,31 @@ class HomeController extends Controller
         return view('admin.calendar', [
             'user' => $user,
             'role' => 'patient',
+        ]);
+    }
+
+    /**
+     * Display the Patient Medical Records (Rekam Medis) view.
+     */
+    public function medicalRecords(): View
+    {
+        $authUser = auth()->user();
+        $user = [
+            'name' => $authUser?->name ?? 'Rina Anggraini',
+            'email' => $authUser?->email ?? 'rina.anggraini@aihealth.com',
+            'phone' => '+62 812 5550 1920',
+            'dob' => '12-06-1992 (34 tahun)',
+            'gender' => 'Perempuan',
+            'mrn' => '#GM-0214',
+            'address' => 'Jl. Senopati No. 42, Kebayoran Baru, Jakarta Selatan, 12190',
+            'role' => $authUser ? ($authUser->isAdmin() ? 'Administrator' : 'Pasien') : 'Pasien',
+            'initials' => $authUser ? strtoupper(substr($authUser->name, 0, 1).substr(trim(strstr($authUser->name, ' ') ?: ''), 0, 1)) : 'RA',
+            'is_logged_in' => auth()->check(),
+            'is_admin' => $authUser?->isAdmin() ?? false,
+        ];
+
+        return view('rekam-medis', [
+            'user' => $user,
         ]);
     }
 }

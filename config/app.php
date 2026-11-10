@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Gabe Medica'),
+    'name' => env('APP_NAME', 'Klinik Maristella'),
 
     /*
     |--------------------------------------------------------------------------
