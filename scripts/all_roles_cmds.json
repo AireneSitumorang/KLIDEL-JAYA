@@ -1,0 +1,1110 @@
+[
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 01 - Beranda & Antrean Pasien",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_patient_home.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 2
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🧭 Sidebar Navigasi Pasien",
+      "x": 0,
+      "y": 0,
+      "width": 240,
+      "height": 960,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1
+      },
+      "parent": 2
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "+ Gabe Medica",
+      "x": 24,
+      "y": 24,
+      "name": "+ Gabe Medica",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Portal Pasien",
+      "x": 24,
+      "y": 46,
+      "name": "Portal Pasien",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#0284C7",
+        "fontStyle": "Bold"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Active Pill",
+      "x": 16,
+      "y": 96,
+      "width": 208,
+      "height": 40,
+      "props": {
+        "fill": "#EFF6FF",
+        "cornerRadius": 10
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Beranda",
+      "x": 36,
+      "y": 107,
+      "name": "Beranda",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Jadwal Dokter",
+      "x": 36,
+      "y": 155,
+      "name": "Jadwal Dokter",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rekam Medis",
+      "x": 36,
+      "y": 203,
+      "name": "Rekam Medis",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pengaturan",
+      "x": 36,
+      "y": 251,
+      "name": "Pengaturan",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 02 - Rekam Medis Pasien (RME)",
+      "x": 1540,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_patient_records.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 12
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "👤 Profil Pasien Rina Anggraini",
+      "x": 40,
+      "y": 88,
+      "width": 1360,
+      "height": 110,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 12
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rina Anggraini (34 Tahun) — #GM-0214",
+      "x": 32,
+      "y": 28,
+      "name": "Rina Anggraini (34 Tahun) — #GM-",
+      "props": {
+        "fontSize": 20,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 14
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "NIK: 3171045206920003  •  Gol. Darah: B+  •  Alergi: Penisilin, Asam Mefenamat",
+      "x": 32,
+      "y": 62,
+      "name": "NIK: 3171045206920003  •  Gol. D",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#64748B",
+        "fontStyle": "Regular"
+      },
+      "parent": 14
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Allergy Tag",
+      "x": 1140,
+      "y": 24,
+      "width": 190,
+      "height": 32,
+      "props": {
+        "fill": "#FEE2E2",
+        "cornerRadius": 8
+      },
+      "parent": 14
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "⚠️ Alergi: Penisilin",
+      "x": 1166,
+      "y": 32,
+      "name": "⚠️ Alergi: Penisilin",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#991B1B",
+        "fontStyle": "Bold"
+      },
+      "parent": 14
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 03 - Jadwal Dokter & Booking Kalender",
+      "x": 3080,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_patient_calendar.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 19
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📅 Filter & Topbar Kalender",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 120,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1
+      },
+      "parent": 19
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Jadwal Praktik Dokter & Janji Temu Pasien",
+      "x": 40,
+      "y": 24,
+      "name": "Jadwal Praktik Dokter & Janji Te",
+      "props": {
+        "fontSize": 20,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 21
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[DOKTER] 04 - Portal Dokter (Antrean & SOAP Klinis)",
+      "x": 0,
+      "y": 1040,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_doctor_dashboard.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 23
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🩺 Topbar Dokter Spesialis",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 64,
+      "props": {
+        "fill": "#012D68"
+      },
+      "parent": 23
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "+ Gabe Medica",
+      "x": 32,
+      "y": 20,
+      "name": "+ Gabe Medica",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 25
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Badge Dokter",
+      "x": 170,
+      "y": 18,
+      "width": 110,
+      "height": 26,
+      "props": {
+        "fill": "#083E88",
+        "cornerRadius": 13
+      },
+      "parent": 25
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "PORTAL DOKTER",
+      "x": 182,
+      "y": 24,
+      "name": "PORTAL DOKTER",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#93C5FD",
+        "fontStyle": "Bold"
+      },
+      "parent": 25
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "👥 Daftar Antrean Pasien Hari Ini",
+      "x": 24,
+      "y": 84,
+      "width": 360,
+      "height": 844,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 23
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Antrean Pasien Hari Ini (10)",
+      "x": 24,
+      "y": 24,
+      "name": "Antrean Pasien Hari Ini (10)",
+      "props": {
+        "fontSize": 16,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 29
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📋 Panel Pemeriksaan SOAP Pasien",
+      "x": 404,
+      "y": 84,
+      "width": 1012,
+      "height": 844,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 23
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rina Anggraini (34 th) — Diagnosa: G43.1 Migraine with aura",
+      "x": 32,
+      "y": 28,
+      "name": "Rina Anggraini (34 th) — Diagnos",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 31
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Save SOAP Btn",
+      "x": 32,
+      "y": 760,
+      "width": 260,
+      "height": 48,
+      "props": {
+        "fill": "#012D68",
+        "cornerRadius": 10
+      },
+      "parent": 31
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "✓ Simpan SOAP & Panggil Berikutnya",
+      "x": 52,
+      "y": 776,
+      "name": "✓ Simpan SOAP & Panggil Berikutn",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 31
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[ADMIN] 05 - Portal Administrator (Kalender & Manajemen)",
+      "x": 1540,
+      "y": 1040,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_admin_dashboard.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 35
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "⚙️ Topbar Administrator",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 64,
+      "props": {
+        "fill": "#6B21A8"
+      },
+      "parent": 35
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "+ Gabe Medica",
+      "x": 32,
+      "y": 20,
+      "name": "+ Gabe Medica",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 37
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Admin Tag",
+      "x": 170,
+      "y": 18,
+      "width": 140,
+      "height": 26,
+      "props": {
+        "fill": "#581C87",
+        "cornerRadius": 13
+      },
+      "parent": 37
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "PORTAL ADMINISTRATOR",
+      "x": 178,
+      "y": 24,
+      "name": "PORTAL ADMINISTRATOR",
+      "props": {
+        "fontSize": 10,
+        "fontFamily": "Inter",
+        "fill": "#E9D5FF",
+        "fontStyle": "Bold"
+      },
+      "parent": 37
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Amélie Laurent (Admin Utama)",
+      "x": 1180,
+      "y": 24,
+      "name": "Amélie Laurent (Admin Utama)",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 37
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[AUTH] 06 - Halaman Login Portal (Multi-Role Switcher)",
+      "x": 3080,
+      "y": 1040,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F3F6F9"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_auth_login.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Pixel-Perfect Render)",
+      "parent": 42
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🔐 Form Login Card",
+      "x": 860,
+      "y": 140,
+      "width": 440,
+      "height": 680,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 24
+      },
+      "parent": 42
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Masuk ke Portal Layanan",
+      "x": 40,
+      "y": 40,
+      "name": "Masuk ke Portal Layanan",
+      "props": {
+        "fontSize": 22,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 44
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pilih role akun Anda di bawah ini",
+      "x": 40,
+      "y": 72,
+      "name": "Pilih role akun Anda di bawah in",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#64748B",
+        "fontStyle": "Regular"
+      },
+      "parent": 44
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[SYSTEM] 07 - Gabe Medica UI Design System & Tokens",
+      "x": 4620,
+      "y": 520,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🎨 Header Design Tokens",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 72,
+      "props": {
+        "fill": "#012D68"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Gabe Medica — UI Design System & Tokens (Pasien, Dokter, Admin)",
+      "x": 40,
+      "y": 24,
+      "name": "Gabe Medica — UI Design System &",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 48
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Primary Navy",
+      "x": 40,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#012D68",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Primary Navy",
+      "x": 52,
+      "y": 126,
+      "name": "Primary Navy",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#012D68",
+      "x": 52,
+      "y": 168,
+      "name": "#012D68",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Admin Purple",
+      "x": 210,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#6B21A8",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Admin Purple",
+      "x": 222,
+      "y": 126,
+      "name": "Admin Purple",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#6B21A8",
+      "x": 222,
+      "y": 168,
+      "name": "#6B21A8",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Sky Accent",
+      "x": 380,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#0284C7",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Sky Accent",
+      "x": 392,
+      "y": 126,
+      "name": "Sky Accent",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#0284C7",
+      "x": 392,
+      "y": 168,
+      "name": "#0284C7",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Primary Tint",
+      "x": 550,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#EFF6FF",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Primary Tint",
+      "x": 562,
+      "y": 126,
+      "name": "Primary Tint",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#EFF6FF",
+      "x": 562,
+      "y": 168,
+      "name": "#EFF6FF",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Emerald Success",
+      "x": 720,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#10B981",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Emerald Success",
+      "x": 732,
+      "y": 126,
+      "name": "Emerald Success",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#10B981",
+      "x": 732,
+      "y": 168,
+      "name": "#10B981",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Amber Warning",
+      "x": 890,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#F59E0B",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Amber Warning",
+      "x": 902,
+      "y": 126,
+      "name": "Amber Warning",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#F59E0B",
+      "x": 902,
+      "y": 168,
+      "name": "#F59E0B",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Rose Danger",
+      "x": 1060,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#F43F5E",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rose Danger",
+      "x": 1072,
+      "y": 126,
+      "name": "Rose Danger",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#F43F5E",
+      "x": 1072,
+      "y": 168,
+      "name": "#F43F5E",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Pure White",
+      "x": 1230,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pure White",
+      "x": 1242,
+      "y": 126,
+      "name": "Pure White",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 47
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#FFFFFF",
+      "x": 1242,
+      "y": 168,
+      "name": "#FFFFFF",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Regular"
+      },
+      "parent": 47
+    }
+  }
+]

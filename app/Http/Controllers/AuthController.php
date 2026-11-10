@@ -13,15 +13,41 @@ class AuthController extends Controller
     /**
      * Display the login view.
      */
+    /**
+     * Display the login view.
+     */
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
-            return Auth::user()->isAdmin()
-                ? redirect()->route('admin.dashboard')
+            /** @var User $user */
+            $user = Auth::user();
+
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($user->isDoctor()) {
+                return redirect()->route('doctor.dashboard');
+            }
+
+            return redirect()->route('home');
+        }
+
+        return view('auth.login', ['initialRole' => request('role', 'user')]);
+    }
+
+    /**
+     * Display the dedicated doctor login view.
+     */
+    public function showDoctorLoginForm(): View|RedirectResponse
+    {
+        if (Auth::check()) {
+            return Auth::user()->isDoctor()
+                ? redirect()->route('doctor.dashboard')
                 : redirect()->route('home');
         }
 
-        return view('auth.login');
+        return view('auth.login', ['initialRole' => 'doctor']);
     }
 
     /**
@@ -47,6 +73,11 @@ class AuthController extends Controller
                     ->with('success', 'Selamat datang kembali di Portal Administrator, '.$user->name);
             }
 
+            if ($user->isDoctor()) {
+                return redirect()->intended(route('doctor.dashboard'))
+                    ->with('success', 'Selamat datang di Portal Layanan Dokter, '.$user->name);
+            }
+
             return redirect()->intended(route('home'))
                 ->with('success', 'Selamat datang kembali, '.$user->name);
         }
@@ -62,16 +93,27 @@ class AuthController extends Controller
      */
     public function quickLogin(string $role): RedirectResponse
     {
-        $email = $role === 'admin' ? 'admin@aihealth.com' : 'user@aihealth.com';
+        $email = match ($role) {
+            'admin' => 'admin@aihealth.com',
+            'doctor', 'dokter' => 'dokter@aihealth.com',
+            default => 'user@aihealth.com',
+        };
+
         $user = User::where('email', $email)->first();
 
         if ($user) {
             Auth::login($user);
             request()->session()->regenerate();
 
-            return $user->isAdmin()
-                ? redirect()->route('admin.dashboard')->with('success', 'Masuk cepat sebagai Administrator ('.$user->name.')')
-                : redirect()->route('home')->with('success', 'Masuk cepat sebagai Pasien / User ('.$user->name.')');
+            if ($user->isAdmin()) {
+                return redirect()->route('admin.dashboard')->with('success', 'Masuk cepat sebagai Administrator ('.$user->name.')');
+            }
+
+            if ($user->isDoctor()) {
+                return redirect()->route('doctor.dashboard')->with('success', 'Masuk cepat sebagai Dokter ('.$user->name.')');
+            }
+
+            return redirect()->route('home')->with('success', 'Masuk cepat sebagai Pasien / User ('.$user->name.')');
         }
 
         return redirect()->route('login')->with('error', 'Akun demo tidak ditemukan.');

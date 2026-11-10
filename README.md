@@ -246,9 +246,11 @@ KLIDEL-JAYA/
 │   │   │   ├── AdminController.php     # Controller dashboard kalender admin
 │   │   │   ├── AuthController.php      # Controller autentikasi & login
 │   │   │   ├── Controller.php          # Base controller
-│   │   │   └── HomeController.php      # Controller dashboard beranda pasien
+│   │   │   ├── DoctorController.php    # Controller portal dokter & rekam medis SOAP
+│   │   │   └── HomeController.php      # Controller dashboard beranda pasien & RME
 │   │   └── Middleware/
-│   │       └── AdminMiddleware.php     # Proteksi rute khusus administrator
+│   │       ├── AdminMiddleware.php     # Proteksi rute khusus administrator
+│   │       └── DoctorMiddleware.php    # Proteksi rute khusus dokter
 │   ├── Models/
 │   │   └── User.php                    # Model entitas pengguna & RBAC helper
 │   └── Providers/
@@ -260,7 +262,7 @@ KLIDEL-JAYA/
 │   ├── factories/
 │   ├── migrations/                     # Skema migrasi tabel basis data
 │   └── seeders/
-│       └── DatabaseSeeder.php          # Seeder data pengguna demo (Admin & Pasien)
+│       └── DatabaseSeeder.php          # Seeder data pengguna demo (Admin, Dokter & Pasien)
 ├── public/
 │   ├── images/
 │   │   ├── 3d/                         # Aset visual 3D (mikroskop, stetoskop)
@@ -280,15 +282,19 @@ KLIDEL-JAYA/
 │       │   └── calendar.blade.php      # Tampilan kalender konsultasi multi-dokter
 │       ├── auth/
 │       │   └── login.blade.php         # Tampilan portal masuk (login split-screen)
+│       ├── doctor/
+│       │   └── dashboard.blade.php     # Tampilan portal kerja dokter & lembar SOAP
 │       ├── layouts/
 │       │   └── app.blade.php           # Template layout induk responsif
-│       └── home.blade.php              # Tampilan beranda & katalog booking pasien
+│       ├── home.blade.php              # Tampilan beranda & katalog booking pasien
+│       └── rekam-medis.blade.php       # Tampilan rekam medis elektronik (RME) pasien
 ├── routes/
 │   ├── console.php
 │   └── web.php                         # Definisi rute web aplikasi
 ├── tests/
 │   └── Feature/
 │       ├── AuthRoleTest.php            # Pengujian otentikasi & proteksi hak akses
+│       ├── DoctorPortalTest.php        # Pengujian fitur portal dokter & SOAP
 │       └── HomeViewTest.php            # Pengujian rendering view beranda
 ├── composer.json                       # Konfigurasi dependensi PHP & skrip setup
 ├── package.json                        # Konfigurasi dependensi Node.js & Vite
@@ -302,11 +308,15 @@ KLIDEL-JAYA/
 | Metode HTTP | Endpoint URI | Nama Rute | Controller & Method | Middleware | Deskripsi |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | `GET` | `/login` | `login` | `AuthController@showLoginForm` | `guest` | Menampilkan formulir masuk portal |
+| `GET` | `/login/dokter` | `login.doctor` | `AuthController@showDoctorLoginForm` | `guest` | Formulir masuk khusus portal dokter |
 | `POST` | `/login` | `login.post` | `AuthController@login` | `guest` | Memproses otentikasi kredensial |
 | `POST` | `/logout` | `logout` | `AuthController@logout` | `auth` | Mengakhiri sesi pengguna aktif |
-| `GET` | `/quick-login/{role}` | `quick-login` | `AuthController@quickLogin` | - | Masuk instan untuk pengujian (`admin`/`user`) |
+| `GET` | `/quick-login/{role}` | `quick-login` | `AuthController@quickLogin` | - | Masuk instan untuk pengujian (`admin`/`doctor`/`user`) |
 | `GET` | `/` | `home` | `HomeController@index` | - | Beranda pasien & direktori dokter |
 | `GET` | `/calendar` | `calendar` | `HomeController@calendar` | - | Kalender jadwal konsultasi pasien |
+| `GET` | `/rekam-medis` | `rekam-medis` | `HomeController@medicalRecords` | - | Tampilan rekam medis elektronik (RME) pasien |
+| `GET` | `/doctor` | `doctor.dashboard` | `DoctorController@index` | `auth`, `doctor` | Portal ruang kerja dokter, antrean, data pasien & lembar SOAP |
+| `POST` | `/doctor/soap/{queueId}` | `doctor.saveSoap` | `DoctorController@saveSoap` | `auth`, `doctor` | Menyimpan rekam medis SOAP klinis & menyelesaikan antrean |
 | `GET` | `/admin` | `admin.dashboard` | `AdminController@index` | `auth`, `admin` | Portal kalender & operasional administrator |
 | `GET` | `/admin/calendar` | `admin.calendar` | `AdminController@index` | `auth`, `admin` | Tampilan kalender jadwal dokter terpadu |
 
@@ -391,6 +401,7 @@ Untuk mempermudah demonstrasi dan evaluasi aplikasi, tersedia akun siap pakai:
 | Peran (Role) | Alamat Email | Kata Sandi | Pintasan Quick-Login |
 | :--- | :--- | :--- | :--- |
 | **Administrator** | `admin@aihealth.com` | `password` | [Akses Cepat Admin](http://localhost:8000/quick-login/admin) |
+| **Dokter (Doctor)** | `dokter@aihealth.com` | `password` | [Akses Cepat Dokter](http://localhost:8000/quick-login/doctor) |
 | **Pasien (User)** | `user@aihealth.com` | `password` | [Akses Cepat Pasien](http://localhost:8000/quick-login/user) |
 
 ---
@@ -409,14 +420,26 @@ vendor/bin/phpunit
 ```
 
 ### Cakupan Pengujian:
-- `test_login_page_renders_successfully`: Memastikan halaman login termuat dengan elemen-elemen penting.
-- `test_user_login_redirects_to_home`: Memastikan login sebagai pasien mengarahkan ke dashboard utama pasien.
-- `test_admin_login_redirects_to_admin_portal`: Memastikan login sebagai administrator dialihkan ke portal admin.
-- `test_guest_is_redirected_from_admin_dashboard`: Memastikan pengguna anonim dicegah mengakses portal admin.
-- `test_regular_user_cannot_access_admin_dashboard`: Memastikan akun pasien biasa tidak diizinkan masuk ke rute `/admin`.
-- `test_admin_can_access_admin_calendar_dashboard`: Memverifikasi hak akses administrator pada dashboard kalender.
-- `test_quick_login_for_user` & `test_quick_login_for_admin`: Memastikan fungsi quick-login bekerja sesuai peran.
-- `test_home_page_renders_successfully`: Memverifikasi struktur data view dokter, janji temu, dan kategori terpasang sempurna.
+- **Auth & Role Access (`AuthRoleTest`):**
+  - `test_login_page_renders_successfully`: Memastikan halaman login termuat dengan elemen-elemen penting.
+  - `test_user_login_redirects_to_home`: Memastikan login sebagai pasien mengarahkan ke dashboard utama pasien.
+  - `test_admin_login_redirects_to_admin_portal`: Memastikan login sebagai administrator dialihkan ke portal admin.
+  - `test_guest_is_redirected_from_admin_dashboard`: Memastikan pengguna anonim dicegah mengakses portal admin.
+  - `test_regular_user_cannot_access_admin_dashboard`: Memastikan akun pasien biasa tidak diizinkan masuk ke rute `/admin`.
+  - `test_admin_can_access_admin_calendar_dashboard`: Memverifikasi hak akses administrator pada dashboard kalender.
+  - `test_quick_login_for_user`, `test_quick_login_for_doctor`, `test_quick_login_for_admin`: Memastikan fungsi quick-login bekerja sesuai peran.
+- **Portal Dokter & Rekam Medis SOAP (`DoctorPortalTest`):**
+  - `test_guest_is_redirected_from_doctor_dashboard`: Memastikan tamu diarahkan ke login saat mengakses portal dokter.
+  - `test_regular_user_cannot_access_doctor_dashboard`: Memastikan akun pasien dilarang mengakses portal dokter.
+  - `test_doctor_can_access_dashboard`: Memastikan dokter dapat mengakses dashboard kerja dokter.
+  - `test_doctor_dashboard_displays_daily_queues`: Memverifikasi tampilan antrean harian poliklinik beserta metriknya.
+  - `test_doctor_dashboard_displays_patient_details`: Memverifikasi tampilan data demografi dan riwayat alergi pasien.
+  - `test_doctor_can_save_soap_medical_record`: Memverifikasi penyimpanan formulir pemeriksaan klinis SOAP dan update status antrean.
+  - `test_doctor_dashboard_displays_medical_history`: Memverifikasi riwayat rekam medis terdahulu pasien.
+  - `test_doctor_login_redirects_to_doctor_dashboard`: Memverifikasi login dokter otomatis mengarahkan ke `/doctor`.
+- **Beranda Pasien & Katalog (`HomeViewTest`):**
+  - `test_home_page_renders_successfully`: Memverifikasi struktur data view dokter, janji temu, dan kategori terpasang sempurna.
+  - `test_booking_registration_modal_renders_in_home`: Memastikan formulir intake pendaftaran konsultasi klinis ter-render dengan field keluhan, durasi, keparahan, dan kontak.
 
 ---
 

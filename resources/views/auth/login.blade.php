@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gabe Medica | Login — Masuk ke Portal Layanan</title>
-  <link rel="icon" type="image/png" href="{{ asset('images/gabe-medica-icon.png') }}" />
+  <title>Klinik Maristella | Login — Masuk ke Portal Layanan</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/maristella-icon.png') }}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      /* Colors - Gabe Medica Deep Royal Navy Brand Palette */
+      /* Colors - Klinik Maristella Deep Royal Navy & Oceanic Palette */
       --color-primary: #012D68;
       --color-primary-hover: #083E88;
       --color-primary-active: #01204C;
@@ -349,14 +349,14 @@
     }
     .demo-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
     }
     .demo-pill {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 10px;
+      padding: 8px 8px;
       border-radius: 10px;
       border: 1px solid var(--color-border);
       background: #fff;
@@ -381,6 +381,7 @@
       flex-shrink: 0;
     }
     .demo-avatar.user-av { background: #E4F0EF; color: #1F6F73; }
+    .demo-avatar.doc-av { background: #EFF6FF; color: #012D68; border: 1px solid #BFDBFE; }
     .demo-avatar.admin-av { background: #F3E8FF; color: #7E22CE; }
     .demo-text {
       min-width: 0;
@@ -410,31 +411,52 @@
       color: var(--color-primary);
     }
 
-    /* ---------- Hero Column (Modern Sleek Rounded Frame) ---------- */
+    /* ---------- Hero Column (Modern Sleek Frame with Vertical Brand Logo) ---------- */
     .login-hero {
       position: relative;
       min-height: 600px;
       height: 100%;
       border-radius: 28px;
       overflow: hidden;
-      background: #012D68;
+      background: radial-gradient(circle at 50% 45%, #F0FDFB 0%, #E6F4F7 60%, #FFFFFF 100%);
       box-shadow: 
-        0 20px 44px -12px rgba(1, 45, 104, 0.22),
-        0 4px 12px rgba(0, 0, 0, 0.04),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.18);
-      border: 1px solid rgba(1, 45, 104, 0.1);
+        0 12px 32px -8px rgba(0, 99, 131, 0.12),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+      border: 1px solid #D5E7EE;
       animation: fade-in .6s ease-out both;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 36px 28px;
+    }
+    .login-hero-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 420px;
     }
     .login-hero-img {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      max-width: 360px;
+      height: auto;
+      object-fit: contain;
       object-position: center center;
       transition: transform .7s cubic-bezier(0.22, 1, 0.36, 1);
       display: block;
+      filter: drop-shadow(0 10px 24px rgba(0, 99, 131, 0.08));
     }
     .login-hero:hover .login-hero-img {
-      transform: scale(1.025);
+      transform: scale(1.03);
+    }
+    .login-hero-tagline {
+      margin: 22px 0 0;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #006383;
+      letter-spacing: 0.2px;
+      text-align: center;
     }
 
     /* ---------- Animations ---------- */
@@ -471,25 +493,29 @@
 
       <!-- ===== Kolom Form ===== -->
       <div class="login-form">
-        <!-- Brand Logo & Wordmark -->
-        <a class="brand" href="{{ route('home') }}" aria-label="Gabe Medica, beranda" title="Gabe Medica">
-          <img src="{{ asset('images/gabe-medica-logo.png') }}?v={{ @filemtime(public_path('images/gabe-medica-logo.png')) }}" alt="Gabe Medica" />
+        <!-- Brand Logo & Wordmark (Menyamping / Horizontal) -->
+        <a class="brand" href="{{ route('home') }}" aria-label="Klinik Maristella, beranda" title="Klinik Maristella">
+          <img src="{{ asset('images/maristella-logo-horizontal.png') }}?v={{ @filemtime(public_path('images/maristella-logo-horizontal.png')) }}" alt="Klinik Maristella" style="max-height: 48px; max-width: 220px;" />
         </a>
 
-        <!-- Role Selector Switch (Pasien / User vs Administrator) -->
+        <!-- Role Selector Switch (Pasien vs Dokter vs Administrator) -->
         <div class="role-selector" role="tablist" aria-label="Pilih Peran Masuk ke Portal">
-          <button type="button" class="role-pill active" id="tabUser" onclick="switchRole('user')" role="tab" aria-selected="true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <button type="button" class="role-pill {{ ($initialRole ?? 'user') === 'user' ? 'active' : '' }}" id="tabUser" onclick="switchRole('user')" role="tab" aria-selected="{{ ($initialRole ?? 'user') === 'user' ? 'true' : 'false' }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
             <span>Pasien / User</span>
           </button>
-          <button type="button" class="role-pill" id="tabAdmin" onclick="switchRole('admin')" role="tab" aria-selected="false">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <button type="button" class="role-pill {{ ($initialRole ?? 'user') === 'doctor' ? 'active' : '' }}" id="tabDoctor" onclick="switchRole('doctor')" role="tab" aria-selected="{{ ($initialRole ?? 'user') === 'doctor' ? 'true' : 'false' }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+            <span>Dokter</span>
+          </button>
+          <button type="button" class="role-pill {{ ($initialRole ?? 'user') === 'admin' ? 'active' : '' }}" id="tabAdmin" onclick="switchRole('admin')" role="tab" aria-selected="{{ ($initialRole ?? 'user') === 'admin' ? 'true' : 'false' }}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             <span>Administrator</span>
           </button>
         </div>
 
         <h1>Selamat Datang</h1>
-        <p class="subtitle" id="subtitle-text">Masuk ke portal layanan kesehatan Gabe Medica</p>
+        <p class="subtitle" id="subtitle-text">Masuk ke Portal Layanan Kesehatan Klinik Maristella</p>
 
 
         <!-- Session Flash Messages -->
@@ -521,7 +547,7 @@
           <div class="field" id="field-email">
             <label for="email">Email</label>
             <input id="email" name="email" type="email" autocomplete="email"
-                   value="{{ old('email', 'user@aihealth.com') }}"
+                   value="{{ old('email', ($initialRole ?? 'user') === 'doctor' ? 'dokter@aihealth.com' : (($initialRole ?? 'user') === 'admin' ? 'admin@aihealth.com' : 'user@aihealth.com')) }}"
                    placeholder="name@example.com" aria-describedby="email-error" required />
             <p class="error-msg" id="email-error">Masukkan alamat email yang valid.</p>
           </div>
@@ -565,14 +591,21 @@
             <a href="{{ route('quick-login', 'user') }}" class="demo-pill" title="Masuk langsung sebagai Pasien">
               <span class="demo-avatar user-av">RA</span>
               <span class="demo-text">
-                <strong>Pasien / User</strong>
+                <strong>Pasien</strong>
                 <small>user@aihealth.com</small>
+              </span>
+            </a>
+            <a href="{{ route('quick-login', 'doctor') }}" class="demo-pill" title="Masuk langsung sebagai Dokter">
+              <span class="demo-avatar doc-av">AK</span>
+              <span class="demo-text">
+                <strong>Dr. Anaya</strong>
+                <small>dokter@aihealth.com</small>
               </span>
             </a>
             <a href="{{ route('quick-login', 'admin') }}" class="demo-pill" title="Masuk langsung sebagai Administrator">
               <span class="demo-avatar admin-av">AL</span>
               <span class="demo-text">
-                <strong>Administrator</strong>
+                <strong>Admin</strong>
                 <small>admin@aihealth.com</small>
               </span>
             </a>
@@ -581,9 +614,12 @@
         </div>
       </div>
 
-      <!-- ===== Kolom Hero (Full-bleed Modern Frame, Polos Tanpa Text Overlay) ===== -->
-      <aside class="login-hero" aria-label="Foto Klinik Gabe Medica">
-        <img src="{{ asset('images/login-hero.jpg') }}?v={{ @filemtime(public_path('images/login-hero.jpg')) }}" alt="Petugas Klinik Gabe Medica" class="login-hero-img" />
+      <!-- ===== Kolom Hero (Vertical Logo Showcase) ===== -->
+      <aside class="login-hero" aria-label="Logo Klinik Maristella">
+        <div class="login-hero-container">
+          <img src="{{ asset('images/maristella-logo-vertical.png') }}?v={{ @filemtime(public_path('images/maristella-logo-vertical.png')) }}" alt="Klinik Maristella" class="login-hero-img" />
+          <p class="login-hero-tagline">Pelayanan Kesehatan Modern, Humanis &amp; Terpercaya</p>
+        </div>
       </aside>
 
     </section>
@@ -600,33 +636,46 @@
       var fieldEmail = document.getElementById('field-email');
       var fieldPassword = document.getElementById('field-password');
       var tabUser = document.getElementById('tabUser');
+      var tabDoctor = document.getElementById('tabDoctor');
       var tabAdmin = document.getElementById('tabAdmin');
       var subtitleText = document.getElementById('subtitle-text');
 
       // Role switcher
       window.switchRole = function (role) {
-        if (role === 'admin') {
-          tabAdmin.classList.add('active');
-          tabAdmin.setAttribute('aria-selected', 'true');
-          tabUser.classList.remove('active');
-          tabUser.setAttribute('aria-selected', 'false');
+        if (role === 'doctor') {
+          if (tabDoctor) { tabDoctor.classList.add('active'); tabDoctor.setAttribute('aria-selected', 'true'); }
+          if (tabUser) { tabUser.classList.remove('active'); tabUser.setAttribute('aria-selected', 'false'); }
+          if (tabAdmin) { tabAdmin.classList.remove('active'); tabAdmin.setAttribute('aria-selected', 'false'); }
+          email.value = 'dokter@aihealth.com';
+          password.value = 'password';
+          subtitleText.textContent = 'Mode Akses: Portal Tenaga Medis & Dokter Klinik Maristella';
+          subtitleText.style.color = 'var(--color-primary)';
+        } else if (role === 'admin') {
+          if (tabAdmin) { tabAdmin.classList.add('active'); tabAdmin.setAttribute('aria-selected', 'true'); }
+          if (tabUser) { tabUser.classList.remove('active'); tabUser.setAttribute('aria-selected', 'false'); }
+          if (tabDoctor) { tabDoctor.classList.remove('active'); tabDoctor.setAttribute('aria-selected', 'false'); }
           email.value = 'admin@aihealth.com';
           password.value = 'password';
-          subtitleText.textContent = 'Mode Akses: Administrator Portal Gabe Medica';
+          subtitleText.textContent = 'Mode Akses: Administrator Portal Klinik Maristella';
           subtitleText.style.color = 'var(--color-primary)';
         } else {
-          tabUser.classList.add('active');
-          tabUser.setAttribute('aria-selected', 'true');
-          tabAdmin.classList.remove('active');
-          tabAdmin.setAttribute('aria-selected', 'false');
+          if (tabUser) { tabUser.classList.add('active'); tabUser.setAttribute('aria-selected', 'true'); }
+          if (tabDoctor) { tabDoctor.classList.remove('active'); tabDoctor.setAttribute('aria-selected', 'false'); }
+          if (tabAdmin) { tabAdmin.classList.remove('active'); tabAdmin.setAttribute('aria-selected', 'false'); }
           email.value = 'user@aihealth.com';
           password.value = 'password';
-          subtitleText.textContent = 'Masuk ke portal layanan kesehatan Gabe Medica';
+          subtitleText.textContent = 'Masuk ke portal layanan kesehatan Klinik Maristella';
           subtitleText.style.color = 'var(--color-text-secondary)';
         }
         setInvalid(fieldEmail, email, false);
         setInvalid(fieldPassword, password, false);
       };
+
+      // Set initial role if specified
+      var initialRole = "{{ $initialRole ?? 'user' }}";
+      if (initialRole === 'doctor' || initialRole === 'admin') {
+        window.switchRole(initialRole);
+      }
 
       // Tampilkan / sembunyikan password
       toggle.addEventListener('click', function () {

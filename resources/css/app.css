@@ -56,6 +56,10 @@
     --color-primary-soft: #1E3A6B;
   }
 
+  html {
+    scrollbar-gutter: stable;
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -472,3 +476,84 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Registration Modal Dialog */
+.modal-backdrop.open {
+  display: flex !important;
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+.modal-backdrop.open .modal-dialog {
+  transform: scale(1) !important;
+}
+
+/* Duration & Severity Pills */
+.duration-pill.active {
+  background-color: #EFF6FF !important;
+  border-color: #012D68 !important;
+  color: #012D68 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 1px 4px rgba(1, 45, 104, 0.15);
+}
+
+.duration-pill.active small {
+  color: #012D68 !important;
+  font-weight: 500;
+}
+
+html[data-theme="dark"] .duration-pill.active {
+  background-color: rgba(1, 45, 104, 0.4) !important;
+  border-color: #3B82F6 !important;
+  color: #93C5FD !important;
+}
+
+html[data-theme="dark"] .duration-pill.active small {
+  color: #BFDBFE !important;
+}
+
+.severity-pill.active[data-severity="Ringan"] {
+  background-color: #ECFDF5 !important;
+  border-color: #10B981 !important;
+  color: #065F46 !important;
+  font-weight: 700 !important;
+}
+
+.severity-pill.active[data-severity="Sedang"] {
+  background-color: #FFFBEB !important;
+  border-color: #F59E0B !important;
+  color: #92400E !important;
+  font-weight: 700 !important;
+}
+
+.severity-pill.active[data-severity="Berat"] {
+  background-color: #FFF1F2 !important;
+  border-color: #F43F5E !important;
+  color: #9F1239 !important;
+  font-weight: 700 !important;
+}
+
+html[data-theme="dark"] .severity-pill.active[data-severity="Ringan"] {
+  background-color: rgba(16, 185, 129, 0.2) !important;
+  border-color: #10B981 !important;
+  color: #6EE7B7 !important;
+}
+
+html[data-theme="dark"] .severity-pill.active[data-severity="Sedang"] {
+  background-color: rgba(245, 158, 11, 0.2) !important;
+  border-color: #F59E0B !important;
+  color: #FCD34D !important;
+}
+
+html[data-theme="dark"] .severity-pill.active[data-severity="Berat"] {
+  background-color: rgba(244, 63, 94, 0.2) !important;
+  border-color: #F43F5E !important;
+  color: #FDA4AF !important;
+}
+
+.symptom-chip.added {
+  background-color: #012D68 !important;
+  border-color: #012D68 !important;
+  color: #ffffff !important;
+}
+

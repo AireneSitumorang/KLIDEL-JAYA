@@ -1,0 +1,1374 @@
+[
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 01 - Pendaftaran Sesi Konsultasi Baru",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\pendaftaran_konsultasi.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Modal Pendaftaran Aktif)",
+      "parent": 2
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📝 Modal Dialog Pendaftaran Konsultasi",
+      "x": 470,
+      "y": 260,
+      "width": 500,
+      "height": 440,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 2
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Buat Konsultasi Baru",
+      "x": 24,
+      "y": 24,
+      "name": "Buat Konsultasi Baru",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pasien: Rina Anggraini (#GM-0214)",
+      "x": 24,
+      "y": 56,
+      "name": "Pasien: Rina Anggraini (#GM-0214",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#64748B",
+        "fontStyle": "Regular"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Input Keluhan Box",
+      "x": 24,
+      "y": 100,
+      "width": 452,
+      "height": 80,
+      "props": {
+        "fill": "#F8FAFC",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Contoh: Keluhan flu, batuk, migrain, atau konsultasi dokter...",
+      "x": 38,
+      "y": 116,
+      "name": "Contoh: Keluhan flu, batuk, migr",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#94A3B8",
+        "fontStyle": "Regular"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Submit Pendaftaran Btn",
+      "x": 24,
+      "y": 350,
+      "width": 452,
+      "height": 46,
+      "props": {
+        "fill": "#012D68",
+        "cornerRadius": 10
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Kirim Permintaan Konsultasi ➜",
+      "x": 150,
+      "y": 364,
+      "name": "Kirim Permintaan Konsultasi ➜",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 4
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 02 - Booking Jadwal Konsultasi Dokter (Interaktif)",
+      "x": 1540,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\booking_modal_active.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Modal Booking Aktif)",
+      "parent": 11
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📅 Modal Booking Jadwal Dokter",
+      "x": 470,
+      "y": 120,
+      "width": 500,
+      "height": 720,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 11
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Booking Jadwal Konsultasi Dokter",
+      "x": 24,
+      "y": 24,
+      "name": "Booking Jadwal Konsultasi Dokter",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pilih Dokter Spesialis:",
+      "x": 24,
+      "y": 70,
+      "name": "Pilih Dokter Spesialis:",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#334155",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Select Doctor Box",
+      "x": 24,
+      "y": 92,
+      "width": 452,
+      "height": 44,
+      "props": {
+        "fill": "#F8FAFC",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 8
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Dr. Saran Mitchell — Spesialis Tulang (Orthopedist)",
+      "x": 38,
+      "y": 106,
+      "name": "Dr. Saran Mitchell — Spesialis T",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Tanggal & Jam Praktik:",
+      "x": 24,
+      "y": 156,
+      "name": "Tanggal & Jam Praktik:",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#334155",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Date Box",
+      "x": 24,
+      "y": 178,
+      "width": 220,
+      "height": 44,
+      "props": {
+        "fill": "#F8FAFC",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 8
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "📅 2026-11-10",
+      "x": 38,
+      "y": 192,
+      "name": "📅 2026-11-10",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Regular"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Hour Box",
+      "x": 256,
+      "y": 178,
+      "width": 220,
+      "height": 44,
+      "props": {
+        "fill": "#F8FAFC",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 8
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "🕒 02:00 PM - 03:00 PM",
+      "x": 270,
+      "y": 192,
+      "name": "🕒 02:00 PM - 03:00 PM",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Regular"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Conflict Detection Box",
+      "x": 24,
+      "y": 240,
+      "width": 452,
+      "height": 50,
+      "props": {
+        "fill": "#F0FDF4",
+        "stroke": "#BBF7D0",
+        "strokeWeight": 1,
+        "cornerRadius": 8
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "✓ Slot Jadwal Tersedia (Tidak Bentrok dengan Pasien Lain)",
+      "x": 40,
+      "y": 256,
+      "name": "✓ Slot Jadwal Tersedia (Tidak Be",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#166534",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Submit Booking Btn",
+      "x": 24,
+      "y": 640,
+      "width": 452,
+      "height": 46,
+      "props": {
+        "fill": "#012D68",
+        "cornerRadius": 10
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Konfirmasi Booking Jadwal Konsultasi",
+      "x": 130,
+      "y": 654,
+      "name": "Konfirmasi Booking Jadwal Konsul",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 13
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[PASIEN] 03 - Bagian Rekam Medis Pasien Lengkap (Full EMR)",
+      "x": 3080,
+      "y": 0,
+      "width": 1440,
+      "height": 1800,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\rekam_medis_full.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1800,
+      "name": "📸 Live Web Viewport (Seluruh 6 Tab & Data Medis Lengkap)",
+      "parent": 27
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "👤 Identitas Pasien Lengkap & Aksi",
+      "x": 40,
+      "y": 88,
+      "width": 1360,
+      "height": 110,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 27
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rina Anggraini (34 Tahun) — #GM-0214",
+      "x": 32,
+      "y": 28,
+      "name": "Rina Anggraini (34 Tahun) — #GM-",
+      "props": {
+        "fontSize": 20,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 29
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "NIK: 3171045206920003  •  Gol. Darah: B+  •  Alamat: Jl. Senopati No. 42, Jakarta Selatan",
+      "x": 32,
+      "y": 62,
+      "name": "NIK: 3171045206920003  •  Gol. D",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#64748B",
+        "fontStyle": "Regular"
+      },
+      "parent": 29
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Btn Buat Konsultasi",
+      "x": 1160,
+      "y": 28,
+      "width": 170,
+      "height": 42,
+      "props": {
+        "fill": "#012D68",
+        "cornerRadius": 10
+      },
+      "parent": 29
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "+ Buat Konsultasi",
+      "x": 1196,
+      "y": 40,
+      "name": "+ Buat Konsultasi",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 29
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📑 6 Tab Navigasi Rekam Medis",
+      "x": 40,
+      "y": 218,
+      "width": 1360,
+      "height": 52,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 12
+      },
+      "parent": 27
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "1. Ringkasan (Overview)",
+      "x": 24,
+      "y": 18,
+      "name": "1. Ringkasan (Overview)",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "2. Riwayat Medis",
+      "x": 230,
+      "y": 18,
+      "name": "2. Riwayat Medis",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "3. Alergi Pasien (⚠️ Penisilin)",
+      "x": 410,
+      "y": 18,
+      "name": "3. Alergi Pasien (⚠️ Penisilin)",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#DC2626",
+        "fontStyle": "Bold"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "4. Obat-obatan",
+      "x": 670,
+      "y": 18,
+      "name": "4. Obat-obatan",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "5. Dokumen & Lab",
+      "x": 860,
+      "y": 18,
+      "name": "5. Dokumen & Lab",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "6. Catatan Dokter",
+      "x": 1070,
+      "y": 18,
+      "name": "6. Catatan Dokter",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Regular"
+      },
+      "parent": 34
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[DOKTER] 04 - Portal Dokter Lengkap (Antrean & Lembar SOAP Full Height)",
+      "x": 0,
+      "y": 1900,
+      "width": 1440,
+      "height": 1800,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\doctor_full.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 1800,
+      "name": "📸 Live Web Viewport (Portal Dokter - Full Panjang & Lengkap)",
+      "parent": 41
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🩺 Topbar & Status Praktik Dokter",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 64,
+      "props": {
+        "fill": "#012D68"
+      },
+      "parent": 41
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "+ Gabe Medica",
+      "x": 32,
+      "y": 20,
+      "name": "+ Gabe Medica",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 43
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Badge Dokter",
+      "x": 170,
+      "y": 18,
+      "width": 140,
+      "height": 26,
+      "props": {
+        "fill": "#083E88",
+        "cornerRadius": 13
+      },
+      "parent": 43
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "PORTAL DOKTER SPESIALIS",
+      "x": 180,
+      "y": 24,
+      "name": "PORTAL DOKTER SPESIALIS",
+      "props": {
+        "fontSize": 10,
+        "fontFamily": "Inter",
+        "fill": "#93C5FD",
+        "fontStyle": "Bold"
+      },
+      "parent": 43
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Dr. Anaya Kapoor, Sp.S • 🟢 Sedang Praktik Aktif",
+      "x": 1100,
+      "y": 24,
+      "name": "Dr. Anaya Kapoor, Sp.S • 🟢 Seda",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#86EFAC",
+        "fontStyle": "Bold"
+      },
+      "parent": 43
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📊 Indikator Antrean & Statistik Harian",
+      "x": 24,
+      "y": 84,
+      "width": 1392,
+      "height": 84,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 41
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pasien Diperiksa: 1",
+      "x": 32,
+      "y": 32,
+      "name": "Pasien Diperiksa: 1",
+      "props": {
+        "fontSize": 14,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 48
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Menunggu: 3",
+      "x": 280,
+      "y": 32,
+      "name": "Menunggu: 3",
+      "props": {
+        "fontSize": 14,
+        "fontFamily": "Inter",
+        "fill": "#D97706",
+        "fontStyle": "Bold"
+      },
+      "parent": 48
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Selesai Hari Ini: 14",
+      "x": 500,
+      "y": 32,
+      "name": "Selesai Hari Ini: 14",
+      "props": {
+        "fontSize": 14,
+        "fontFamily": "Inter",
+        "fill": "#16A34A",
+        "fontStyle": "Bold"
+      },
+      "parent": 48
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Total Kuota Pasien: 24",
+      "x": 740,
+      "y": 32,
+      "name": "Total Kuota Pasien: 24",
+      "props": {
+        "fontSize": 14,
+        "fontFamily": "Inter",
+        "fill": "#475569",
+        "fontStyle": "Bold"
+      },
+      "parent": 48
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "📋 Lembar Pemeriksaan SOAP Lengkap & Resep",
+      "x": 420,
+      "y": 190,
+      "width": 996,
+      "height": 1560,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#E2E8F0",
+        "strokeWeight": 1,
+        "cornerRadius": 16
+      },
+      "parent": 41
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Ny. Rina Anggraini (34 Th) — Keluhan: Sakit Kepala Berdenyut Unilateral",
+      "x": 32,
+      "y": 28,
+      "name": "Ny. Rina Anggraini (34 Th) — Kel",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 53
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Allergy Pill",
+      "x": 810,
+      "y": 24,
+      "width": 160,
+      "height": 32,
+      "props": {
+        "fill": "#FEE2E2",
+        "cornerRadius": 8
+      },
+      "parent": 53
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "⚠️ Alergi: Penisilin",
+      "x": 826,
+      "y": 32,
+      "name": "⚠️ Alergi: Penisilin",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#991B1B",
+        "fontStyle": "Bold"
+      },
+      "parent": 53
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Submit SOAP Btn Full",
+      "x": 32,
+      "y": 1480,
+      "width": 340,
+      "height": 50,
+      "props": {
+        "fill": "#012D68",
+        "cornerRadius": 12
+      },
+      "parent": 53
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "✓ Simpan Rekam Medis SOAP & Selesaikan Sesi",
+      "x": 50,
+      "y": 1496,
+      "name": "✓ Simpan Rekam Medis SOAP & Sele",
+      "props": {
+        "fontSize": 13,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 53
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[ADMIN] 05 - Portal Administrator (Kalender & Operasional)",
+      "x": 1540,
+      "y": 1900,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_admin_dashboard.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Portal Admin)",
+      "parent": 59
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[AUTH] 06 - Halaman Login Portal (Multi-Role Switcher)",
+      "x": 3080,
+      "y": 1900,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F3F6F9"
+      }
+    }
+  },
+  {
+    "command": "image.place",
+    "params": {
+      "path": "C:\\laragon\\www\\KLINIK\\web_screenshots\\role_auth_login.png",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 960,
+      "name": "📸 Live Web Viewport (Login Portal)",
+      "parent": 61
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "[SYSTEM] 07 - Gabe Medica UI Design System & Tokens",
+      "x": 4620,
+      "y": 1900,
+      "width": 1440,
+      "height": 960,
+      "props": {
+        "fill": "#F8FAFC"
+      }
+    }
+  },
+  {
+    "command": "frame.create",
+    "params": {
+      "name": "🎨 Header Design Tokens",
+      "x": 0,
+      "y": 0,
+      "width": 1440,
+      "height": 72,
+      "props": {
+        "fill": "#012D68"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Gabe Medica — UI Design System & Tokens",
+      "x": 40,
+      "y": 24,
+      "name": "Gabe Medica — UI Design System &",
+      "props": {
+        "fontSize": 18,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 64
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Primary Navy",
+      "x": 40,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#012D68",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Primary Navy",
+      "x": 52,
+      "y": 126,
+      "name": "Primary Navy",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#012D68",
+      "x": 52,
+      "y": 168,
+      "name": "#012D68",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Admin Purple",
+      "x": 210,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#6B21A8",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Admin Purple",
+      "x": 222,
+      "y": 126,
+      "name": "Admin Purple",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#6B21A8",
+      "x": 222,
+      "y": 168,
+      "name": "#6B21A8",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Sky Accent",
+      "x": 380,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#0284C7",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Sky Accent",
+      "x": 392,
+      "y": 126,
+      "name": "Sky Accent",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#0284C7",
+      "x": 392,
+      "y": 168,
+      "name": "#0284C7",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Primary Tint",
+      "x": 550,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#EFF6FF",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Primary Tint",
+      "x": 562,
+      "y": 126,
+      "name": "Primary Tint",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#EFF6FF",
+      "x": 562,
+      "y": 168,
+      "name": "#EFF6FF",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#012D68",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Emerald Success",
+      "x": 720,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#10B981",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Emerald Success",
+      "x": 732,
+      "y": 126,
+      "name": "Emerald Success",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#10B981",
+      "x": 732,
+      "y": 168,
+      "name": "#10B981",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Amber Warning",
+      "x": 890,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#F59E0B",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Amber Warning",
+      "x": 902,
+      "y": 126,
+      "name": "Amber Warning",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#F59E0B",
+      "x": 902,
+      "y": 168,
+      "name": "#F59E0B",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Rose Danger",
+      "x": 1060,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#F43F5E",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Rose Danger",
+      "x": 1072,
+      "y": 126,
+      "name": "Rose Danger",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#F43F5E",
+      "x": 1072,
+      "y": 168,
+      "name": "#F43F5E",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#FFFFFF",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "shape.rectangle",
+    "params": {
+      "name": "Color Pure White",
+      "x": 1230,
+      "y": 110,
+      "width": 150,
+      "height": 90,
+      "props": {
+        "fill": "#FFFFFF",
+        "stroke": "#CBD5E1",
+        "strokeWeight": 1,
+        "cornerRadius": 10
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "Pure White",
+      "x": 1242,
+      "y": 126,
+      "name": "Pure White",
+      "props": {
+        "fontSize": 12,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Bold"
+      },
+      "parent": 63
+    }
+  },
+  {
+    "command": "text.create",
+    "params": {
+      "text": "#FFFFFF",
+      "x": 1242,
+      "y": 168,
+      "name": "#FFFFFF",
+      "props": {
+        "fontSize": 11,
+        "fontFamily": "Inter",
+        "fill": "#0F172A",
+        "fontStyle": "Regular"
+      },
+      "parent": 63
+    }
+  }
+]

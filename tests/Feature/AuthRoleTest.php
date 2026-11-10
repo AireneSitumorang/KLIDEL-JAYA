@@ -38,6 +38,9 @@ class AuthRoleTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
+        $response->assertSee('Klinik Maristella');
+        $response->assertSee('maristella-logo-horizontal.png');
+        $response->assertSee('maristella-logo-vertical.png');
         $response->assertSee('Masuk ke Portal');
         $response->assertSee('Pasien / User');
         $response->assertSee('Administrator');

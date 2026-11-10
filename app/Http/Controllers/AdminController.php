@@ -15,7 +15,7 @@ class AdminController extends Controller
         $admin = Auth::user();
         $user = [
             'name' => $admin?->name ?? 'Amélie Laurent',
-            'email' => $admin?->email ?? 'admin@gabemedica.com',
+            'email' => $admin?->email ?? 'admin@klinikmaristella.com',
             'role' => 'Administrator',
             'initials' => $admin ? strtoupper(substr($admin->name, 0, 1).substr(trim(strstr($admin->name, ' ') ?: 'L'), 1, 1)) : 'AL',
             'is_logged_in' => true,

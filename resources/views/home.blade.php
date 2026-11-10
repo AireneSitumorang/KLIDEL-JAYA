@@ -10,10 +10,10 @@
         
         <!-- SIDEBAR -->
         <aside class="side bg-[var(--color-surface)] border-r border-[var(--color-border)] p-5 flex flex-col gap-1.5 sticky top-0 h-screen z-20">
-            <!-- Logo -->
-            <a href="{{ route('home') }}" class="logo flex items-center gap-2.5 mb-6 no-underline" title="Gabe Medica">
-                <img src="{{ asset('images/gabe-medica-logo.png') }}" alt="Gabe Medica" class="h-9 w-auto object-contain hidden xl:block" />
-                <img src="{{ asset('images/gabe-medica-icon.png') }}" alt="Gabe Medica" class="h-9 w-auto object-contain block xl:hidden" />
+            <!-- Logo (Klinik Maristella) -->
+            <a href="{{ route('home') }}" class="logo flex items-center gap-2.5 mb-6 no-underline" title="Klinik Maristella">
+                <img src="{{ asset('images/maristella-logo-horizontal.png') }}" alt="Klinik Maristella" class="h-9 w-auto object-contain hidden xl:block" style="max-height: 36px; max-width: 170px;" />
+                <img src="{{ asset('images/maristella-icon.png') }}" alt="Klinik Maristella" class="h-9 w-auto object-contain block xl:hidden" style="max-height: 36px; max-width: 36px;" />
             </a>
 
             <!-- Navigation Items -->
@@ -31,17 +31,11 @@
                     <span class="hidden xl:inline text-[14px]">Jadwal</span>
                 </a>
 
-                <!-- Dokter -->
-                <button class="nav flex items-center gap-3 p-2.5 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-tint)]/60 text-left w-full transition-colors" onclick="window.showToast('Membuka direktori Dokter...')">
-                    <svg class="app-svg-icon"><use href="#icon-user"/></svg>
-                    <span class="hidden xl:inline text-[14px]">Dokter</span>
-                </button>
-
                 <!-- Rekam Medis -->
-                <button class="nav flex items-center gap-3 p-2.5 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-tint)]/60 text-left w-full transition-colors" onclick="window.showToast('Membuka Rekam Medis pasien...')">
+                <a href="{{ route('rekam-medis') }}" class="nav flex items-center gap-3 p-2.5 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-tint)]/60 text-left w-full transition-colors">
                     <svg class="app-svg-icon"><use href="#icon-doc"/></svg>
                     <span class="hidden xl:inline text-[14px]">Rekam Medis</span>
-                </button>
+                </a>
 
                 <!-- Pengaturan -->
                 <button class="nav flex items-center gap-3 p-2.5 rounded-xl text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-tint)]/60 text-left w-full transition-colors" onclick="window.showToast('Membuka Pengaturan...')">
@@ -54,6 +48,12 @@
                         <a href="{{ route('admin.dashboard') }}" class="nav flex items-center gap-3 p-2.5 rounded-xl text-purple-700 bg-purple-50 hover:bg-purple-100 text-left w-full transition-colors font-medium">
                             <svg class="app-svg-icon text-purple-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                             <span class="hidden xl:inline text-[14px]">Portal Admin</span>
+                        </a>
+                    @endif
+                    @if (auth()->user()->isDoctor())
+                        <a href="{{ route('doctor.dashboard') }}" class="nav flex items-center gap-3 p-2.5 rounded-xl text-blue-800 bg-blue-50 hover:bg-blue-100 text-left w-full transition-colors font-medium">
+                            <svg class="app-svg-icon text-[#012D68]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            <span class="hidden xl:inline text-[14px]">Portal Dokter</span>
                         </a>
                     @endif
 
@@ -115,12 +115,12 @@
                 @endauth
             </header>
 
-            <!-- Greeting Banner with Integrated Next Appointment Card (Solid Gabe Medica Navy) -->
+            <!-- Greeting Banner with Integrated Next Appointment Card (Solid Klinik Maristella Navy) -->
             <section class="banner rounded-[24px] p-7 flex justify-between items-center gap-6 flex-wrap text-white shadow-sm">
                 <div class="max-w-[340px]">
                     <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#001F4D] text-blue-100 border border-blue-700/60 text-xs font-semibold mb-2.5 shadow-xs">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Layanan Prioritas Gabe Medica
+                        Layanan Prioritas Klinik Maristella
                     </div>
                     <small class="text-white/80 text-[13px] block">Selamat siang,</small>
                     <h1 class="text-[30px] font-bold leading-[1.2] mt-1 text-white">What’s on your health today?</h1>
@@ -364,7 +364,7 @@
     <!-- ========================================== -->
     <div class="mobile-layout block lg:hidden min-h-screen relative pb-28">
 
-        <!-- Solid Dynamic Gabe Medica Navy Header (No Gradient) -->
+        <!-- Solid Dynamic Klinik Maristella Navy Header (No Gradient) -->
         <header class="bg-[#012D68] pt-12 px-5 pb-8 text-white">
             <div class="flex justify-between items-center">
                 <!-- User Avatar -->
@@ -372,9 +372,9 @@
                     {{ $user['initials'] }}
                 </div>
 
-                <!-- Gabe Medica Brand Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/30 no-underline shadow-sm" title="Gabe Medica">
-                    <img src="{{ asset('images/gabe-medica-logo-white.png') }}" alt="Gabe Medica" class="h-5 w-auto object-contain" />
+                <!-- Klinik Maristella Brand Logo -->
+                <a href="{{ route('home') }}" class="flex items-center gap-1.5 bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/30 no-underline shadow-sm" title="Klinik Maristella">
+                    <img src="{{ asset('images/maristella-logo-white.png') }}" alt="Klinik Maristella" class="h-5 w-auto object-contain" style="max-height: 20px; max-width: 120px;" />
                 </a>
 
                 <!-- Right Glass Buttons -->
@@ -603,6 +603,174 @@
             <button class="btn-book-session w-full h-11 rounded-[14px] bg-[var(--color-primary)] text-white font-semibold text-[14px] mt-5 shadow-md">
                 Book a Session
             </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. BOOKING REGISTRATION MODAL              -->
+    <!-- ========================================== -->
+    <div id="booking-modal-backdrop" class="modal-backdrop fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-200 flex items-center justify-center p-4">
+        <div id="booking-modal" class="modal-dialog bg-white dark:bg-[#101E35] w-full max-w-lg rounded-[24px] shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[92vh] overflow-hidden transform scale-95 transition-all duration-200" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-[#101E35] sticky top-0 z-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[#012D68] dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <div>
+                        <h3 id="modal-title" class="text-[17px] font-bold text-slate-900 dark:text-white leading-tight">Pendaftaran Sesi Konsultasi</h3>
+                        <p class="text-[12px] text-slate-500 dark:text-slate-400 mt-0.5">Lengkapi keluhan dan detail kesehatan Anda sebelum sesi dimulai</p>
+                    </div>
+                </div>
+                <button type="button" id="btn-close-modal" class="w-8 h-8 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-300 flex items-center justify-center transition-colors" aria-label="Tutup formulir">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable) -->
+            <div class="p-6 overflow-y-auto space-y-5 text-slate-800 dark:text-slate-200">
+                
+                <!-- Doctor & Schedule Summary Pill -->
+                <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-700/80 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="w-12 h-12 rounded-xl bg-blue-100/70 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-200">
+                            <img id="modal-doc-img" src="{{ asset('images/doctors/doctor-2.png') }}" alt="Dokter" class="w-full h-full object-cover object-bottom">
+                            <span id="modal-doc-initials" class="hidden font-bold text-blue-900 text-sm">AK</span>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <b id="modal-doc-name" class="text-[14px] text-slate-900 dark:text-white font-bold truncate">Dr. Anaya Kapoor</b>
+                                <span class="inline-flex items-center gap-0.5 text-[11px] font-semibold text-amber-600">
+                                    ★ <span id="modal-doc-rating">4.8</span>
+                                </span>
+                            </div>
+                            <span id="modal-doc-specialty" class="text-[12px] text-slate-500 dark:text-slate-400 block truncate">Neurologist</span>
+                            <div class="flex items-center gap-2 mt-1 text-[11.5px] font-medium text-[#012D68] dark:text-blue-300">
+                                <span class="inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    <span id="modal-doc-schedule">Tu 12 · 01 PM</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <small class="text-[11px] text-slate-400 block">Tarif Sesi</small>
+                        <b id="modal-doc-price" class="text-[15px] font-bold text-[#012D68] dark:text-blue-400">$18.0</b>
+                    </div>
+                </div>
+
+                <!-- Form Inputs -->
+                <form id="booking-intake-form" onsubmit="return false;" class="space-y-4">
+                    
+                    <!-- Patient Name & Phone -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="reg-patient-name" class="block text-[12.5px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Nama Pasien <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" id="reg-patient-name" value="{{ $user['name'] }}" required placeholder="Nama lengkap pasien" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-[13px] focus:border-[#012D68] focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label for="reg-patient-phone" class="block text-[12.5px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                No. WhatsApp / HP <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="tel" id="reg-patient-phone" value="0812-9988-7766" required placeholder="Contoh: 081234567890" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-[13px] focus:border-[#012D68] focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                        </div>
+                    </div>
+
+                    <!-- Symptoms / Gejala (Wajib) -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label for="reg-symptoms" class="text-[12.5px] font-semibold text-slate-700 dark:text-slate-300">
+                                Gejala / Keluhan Utama <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[11px] text-slate-400">Pilih cepat atau ketik manual</span>
+                        </div>
+
+                        <!-- Quick Symptom Tags -->
+                        <div class="flex flex-wrap gap-1.5 mb-2" id="quick-symptoms-chips">
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Sakit kepala berdenyut">+ Sakit Kepala</button>
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Demam tinggi">+ Demam</button>
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Pusing & mual">+ Pusing / Vertigo</button>
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Nyeri persendian & kaku">+ Nyeri Sendi</button>
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Sesak napas ringan">+ Sesak Napas</button>
+                            <button type="button" class="symptom-chip text-[11px] px-2.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 hover:border-[#012D68] hover:bg-blue-50 dark:hover:bg-blue-950/40 text-slate-600 dark:text-slate-300 transition-colors" data-symptom="Nyeri dada sebelah kiri">+ Nyeri Dada</button>
+                        </div>
+
+                        <textarea id="reg-symptoms" rows="3" required placeholder="Jelaskan secara spesifik keluhan atau rasa sakit yang Anda alami..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-[13px] focus:border-[#012D68] focus:ring-2 focus:ring-blue-100 outline-none transition-all resize-none"></textarea>
+                        <p id="symptoms-error" class="hidden text-rose-500 text-[11.5px] mt-1 font-medium">Mohon tuliskan gejala atau keluhan yang dirasakan.</p>
+                    </div>
+
+                    <!-- Duration (Sudah Berapa Lama) (Wajib) -->
+                    <div>
+                        <label class="block text-[12.5px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                            Sudah Berapa Lama Dirasakan? <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2" id="duration-selector">
+                            <button type="button" class="duration-pill py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-[#012D68] transition-all" data-duration="< 24 Jam">
+                                &lt; 24 Jam
+                                <small class="block text-[10px] text-slate-400 font-normal">Baru muncul</small>
+                            </button>
+                            <button type="button" class="duration-pill active py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-[#012D68] transition-all" data-duration="1 - 3 Hari">
+                                1 - 3 Hari
+                                <small class="block text-[10px] text-slate-400 font-normal">Beberapa hari</small>
+                            </button>
+                            <button type="button" class="duration-pill py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-[#012D68] transition-all" data-duration="1 - 2 Minggu">
+                                1 - 2 Minggu
+                                <small class="block text-[10px] text-slate-400 font-normal">Subakut</small>
+                            </button>
+                            <button type="button" class="duration-pill py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-[#012D68] transition-all" data-duration="> 1 Bulan">
+                                &gt; 1 Bulan
+                                <small class="block text-[10px] text-slate-400 font-normal">Kronis / Menahun</small>
+                            </button>
+                        </div>
+                        <input type="hidden" id="reg-duration" value="1 - 3 Hari">
+                    </div>
+
+                    <!-- Severity Level -->
+                    <div>
+                        <label class="block text-[12.5px] font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                            Tingkat Keparahan / Skala Gangguan
+                        </label>
+                        <div class="grid grid-cols-3 gap-2" id="severity-selector">
+                            <button type="button" class="severity-pill py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-emerald-500 transition-all" data-severity="Ringan">
+                                <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span> Ringan
+                                <small class="block text-[10px] text-slate-400 font-normal">Bisa beraktivitas</small>
+                            </button>
+                            <button type="button" class="severity-pill active py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-amber-500 transition-all" data-severity="Sedang">
+                                <span class="inline-block w-2 h-2 rounded-full bg-amber-500 mr-1"></span> Sedang
+                                <small class="block text-[10px] text-slate-400 font-normal">Terganggu</small>
+                            </button>
+                            <button type="button" class="severity-pill py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-700 text-center text-[12px] font-medium text-slate-700 dark:text-slate-300 hover:border-rose-500 transition-all" data-severity="Berat">
+                                <span class="inline-block w-2 h-2 rounded-full bg-rose-500 mr-1"></span> Berat
+                                <small class="block text-[10px] text-slate-400 font-normal">Butuh segera</small>
+                            </button>
+                        </div>
+                        <input type="hidden" id="reg-severity" value="Sedang">
+                    </div>
+
+                    <!-- Additional Notes / Allergies (Optional) -->
+                    <div>
+                        <label for="reg-notes" class="block text-[12.5px] font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Riwayat Alergi / Catatan Tambahan <span class="text-slate-400 text-[11px] font-normal">(Opsional)</span>
+                        </label>
+                        <input type="text" id="reg-notes" placeholder="Contoh: Alergi obat penisilin, riwayat asam lambung..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-white text-[13px] focus:border-[#012D68] focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                    </div>
+                </form>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-3 sticky bottom-0">
+                <button type="button" id="btn-cancel-booking" class="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-semibold text-[13px] transition-colors">
+                    Batal
+                </button>
+                <button type="button" id="btn-confirm-booking" class="px-6 py-2.5 rounded-xl bg-[#012D68] hover:bg-[#023E8A] active:bg-[#001F4D] text-white font-bold text-[13.5px] transition-all shadow-md flex items-center gap-2">
+                    <span>Konfirmasi Pemesanan</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </button>
+            </div>
         </div>
     </div>
 </div>

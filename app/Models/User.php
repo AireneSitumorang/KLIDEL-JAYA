@@ -34,6 +34,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is a doctor.
+     */
+    public function isDoctor(): bool
+    {
+        return $this->role === 'doctor';
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

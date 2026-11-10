@@ -34,5 +34,15 @@ class DatabaseSeeder extends Seeder
                 'role' => 'admin',
             ]
         );
+
+        // Default Dokter (Spesialis Saraf / Neurologist)
+        User::updateOrCreate(
+            ['email' => 'dokter@aihealth.com'],
+            [
+                'name' => 'Dr. Anaya Kapoor, Sp.S',
+                'password' => bcrypt('password'),
+                'role' => 'doctor',
+            ]
+        );
     }
 }
