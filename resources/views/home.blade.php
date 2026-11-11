@@ -16,6 +16,10 @@
         'patients' => '1k Up',
     ];
 @endphp
+<script>
+    window.currentBookingCode = "{{ $nextAppointment['booking_code'] ?? '#BILL00124' }}";
+    window.currentBookingId = {{ $latestBooking?->id ?? 'null' }};
+</script>
 <div class="relative w-full min-h-screen">
 
     <!-- ========================================== -->
@@ -142,19 +146,50 @@
                 </div>
 
                 <!-- Next Appointment Card (Solid Pure White Surface with Dynamic Examination / Payment States) -->
-                <div class="next-appt-card bg-white dark:bg-[#101E35] text-slate-900 dark:text-white rounded-[22px] p-4 w-[385px] max-w-full shadow-md border border-slate-100 dark:border-slate-800 transition-all duration-300">
+                <div class="next-appt-card bg-white dark:bg-[#101E35] text-slate-900 dark:text-white rounded-[22px] p-4 w-[385px] max-w-full shadow-md border border-slate-100 dark:border-slate-800 transition-all duration-300" data-appointment-mode="{{ $appointmentMode }}">
                     
+                    <!-- State 0: SELAMAT DATANG (Aktif saat tidak ada tagihan aktif / sesudah bayar lunas) -->
+                    <div id="desktop-state-welcome" class="appointment-state-panel flex flex-col justify-between min-h-[148px] {{ $appointmentMode === 'welcome' ? '' : 'hidden' }}" data-status="Selamat Datang" aria-label="Status Janji Temu: Selamat Datang">
+                        <span class="sr-only">Selamat Datang</span>
+                        <div class="flex items-center justify-between mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <small class="text-slate-400 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Layanan Pasien</small>
+                            </div>
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                                Siap Melayani
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-3 py-1">
+                            <div class="w-[50px] h-[50px] rounded-[14px] bg-emerald-50 dark:bg-emerald-950/50 overflow-hidden flex items-center justify-center flex-shrink-0 border border-emerald-100 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 shadow-xs">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <b class="block text-[14.5px] text-slate-900 dark:text-white truncate font-bold">Selamat datang, ada yang bisa dibantu?</b>
+                                <small class="block text-slate-500 dark:text-slate-400 text-[11.5px] mt-0.5 leading-tight">Konsultasikan keluhan kesehatan Anda dengan dokter spesialis kami.</small>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mt-2">
+                            <button type="button" class="btn-open-booking-trigger h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 font-semibold text-[12px] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="document.getElementById('open-booking-modal-btn')?.click() || window.showBookingModal?.()">Cari Dokter</button>
+                            <button type="button" class="btn-open-booking-trigger h-9 rounded-xl bg-[#012D68] hover:bg-[#023E8A] text-white font-bold text-[12px] flex items-center justify-center gap-1.5 transition-all shadow-xs" onclick="document.getElementById('open-booking-modal-btn')?.click() || window.showBookingModal?.()">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                <span>Buat Janji Temu</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- State 1: SEBELUM PERIKSA (Default / Upcoming) -->
-                    <div id="desktop-state-before" class="appointment-state-panel space-y-3">
-                        <div class="flex items-center justify-between mb-2">
+                    <div id="desktop-state-before" class="appointment-state-panel flex flex-col justify-between min-h-[148px] {{ $appointmentMode === 'before' ? '' : 'hidden' }}" data-status="Sebelum Periksa" aria-label="Status Janji Temu: Sebelum Periksa">
+                        <span class="sr-only">Sebelum Periksa</span>
+                        <div class="flex items-center justify-between mb-1">
                             <small class="text-slate-400 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Next Appointment</small>
                             <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
                                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                                 Upcoming
                             </span>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <div class="w-[52px] h-[52px] rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
+                        <div class="flex items-center gap-3 py-1">
+                            <div class="w-[50px] h-[50px] rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
                                 <img src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
                             </div>
                             <div class="min-w-0 flex-1">
@@ -163,7 +198,7 @@
                                 <small class="block text-[#012D68] dark:text-blue-300 font-semibold text-[11px] mt-0.5">{{ $nextAppointment['date_time'] }}</small>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2.5 mt-3">
+                        <div class="grid grid-cols-2 gap-2 mt-2">
                             <button type="button" class="btn-reschedule h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 font-semibold text-[12px] hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="window.showToast('Jadwal konsultasi dapat diatur melalui menu Jadwal.')">Reschedule</button>
                             <button type="button" class="btn-join-call h-9 rounded-xl bg-[#012D68] hover:bg-[#023E8A] text-white font-bold text-[12px] flex items-center justify-center gap-1.5 transition-all shadow-xs" onclick="window.showToast('Menghubungkan ke ruang panggilan video Dr. Saran Mitchell...')">
                                 <svg class="app-svg-icon w-3.5 h-3.5"><use href="#icon-vid"/></svg>
@@ -173,11 +208,12 @@
                     </div>
 
                     <!-- State 2: SESUDAH PERIKSA (Meminta Pembayaran / Unpaid) -->
-                    <div id="desktop-state-after" class="appointment-state-panel hidden space-y-3">
-                        <div class="flex items-center justify-between mb-1.5">
+                    <div id="desktop-state-after" class="appointment-state-panel flex flex-col justify-between min-h-[148px] {{ $appointmentMode === 'after' ? '' : 'hidden' }}" data-status="Sesudah Periksa" aria-label="Status Janji Temu: Sesudah Periksa">
+                        <span class="sr-only">Sesudah Periksa</span>
+                        <div class="flex items-center justify-between mb-1">
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
-                                <small class="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Tagihan Pemeriksaan</small>
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                <small class="text-slate-400 dark:text-slate-400 text-[11px] font-bold uppercase tracking-wider">Tagihan Pemeriksaan</small>
                             </div>
                             <span id="desktop-unpaid-badge" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
                                 UNPAID
@@ -185,81 +221,63 @@
                         </div>
 
                         <div class="flex items-center gap-3">
-                            <div class="relative w-[52px] h-[52px] rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
-                                <img src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
+                            <div class="relative w-[48px] h-[48px] rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
+                                <img id="desktop-after-doc-img" src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
                                 <span class="absolute bottom-0 right-0 bg-emerald-500 text-white rounded-tl-lg p-0.5 shadow-xs" title="Pemeriksaan Selesai">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                                 </span>
                             </div>
                             <div class="min-w-0 flex-1">
-                                <b class="block text-[14px] text-slate-900 dark:text-white truncate font-bold">{{ $nextAppointment['doctor_name'] }}</b>
-                                <small class="block text-slate-500 dark:text-slate-400 text-[11px] truncate">Pemeriksaan Selesai · Hari ini, 14:55 WIB</small>
-                                <div class="flex items-baseline gap-1.5 mt-0.5">
-                                    <small class="text-slate-400 text-[11px] font-medium">Tarif Sistem:</small>
-                                    <b id="desktop-total-display" class="text-[15.5px] font-extrabold text-[#012D68] dark:text-blue-400">$435.00</b>
+                                <b id="desktop-after-doc-name" class="block text-[14px] text-slate-900 dark:text-white truncate font-bold">{{ $nextAppointment['doctor_name'] }}</b>
+                                <div class="flex items-center gap-1.5 text-[11px] mt-0.5 truncate">
+                                    <span class="text-slate-500 dark:text-slate-400">Selesai · 14:55 WIB</span>
+                                    <span class="text-slate-300 dark:text-slate-600">•</span>
+                                    <span id="desktop-status-pill" class="text-rose-600 dark:text-rose-400 font-semibold">Menunggu Pembayaran</span>
                                 </div>
+                                <div class="flex items-baseline justify-between text-[11px] mt-0.5">
+                                    <div class="flex items-baseline gap-1">
+                                        <span class="text-slate-400 text-[10.5px]">Total:</span>
+                                        <b id="desktop-total-display" class="text-[14px] font-extrabold text-[#012D68] dark:text-blue-400">${{ number_format((float) ($nextAppointment['total_amount'] ?? 435), 2) }}</b>
+                                    </div>
+                                    <span id="desktop-after-ref-code" class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Ref: {{ $nextAppointment['booking_code'] }}</span>
+                                </div>
+                                <span id="desktop-service-desc" class="hidden">Layanan Ortopedi &amp; 1 Resep Obat Klinik</span>
                             </div>
                         </div>
 
-                        <!-- Pilihan Cakupan Tarif Sistem (Konsultasi Saja vs Konsultasi + Obat) -->
-                        <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 text-[11px] space-y-1.5">
-                            <div class="flex items-center justify-between text-slate-700 dark:text-slate-300">
-                                <span class="font-bold text-[10.5px] text-slate-500 uppercase tracking-wider">Cakupan Tarif:</span>
-                                <span id="desktop-status-pill" class="font-bold text-rose-600 dark:text-rose-400">Menunggu Pembayaran</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-1.5 pt-0.5">
-                                <button type="button" class="btn-select-tariff-plan p-1.5 rounded-lg border-2 border-[#012D68] bg-white dark:bg-[#101E35] text-[#012D68] dark:text-blue-300 font-bold text-[11px] shadow-xs text-left transition-all" data-plan="with_medicine">
-                                    <span class="block leading-tight font-bold">Konsultasi + Obat</span>
-                                    <small class="block text-[10px] text-slate-500 font-medium">$435.00 (Lengkap)</small>
-                                </button>
-                                <button type="button" class="btn-select-tariff-plan p-1.5 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-slate-500 dark:text-slate-400 font-semibold text-[11px] hover:border-slate-400 text-left transition-all" data-plan="consultation_only">
-                                    <span class="block leading-tight font-bold">Konsultasi Saja</span>
-                                    <small class="block text-[10px] text-slate-500 font-medium">$180.00 (Pemeriksaan)</small>
-                                </button>
-                            </div>
-                            <div class="text-[10px] text-slate-400 flex items-center justify-between pt-0.5 border-t border-slate-200/60 dark:border-slate-700/60">
-                                <span id="desktop-service-desc">Layanan Ortopedi &amp; 1 Resep Obat Klinik</span>
-                                <span>Ref: #BILL00124</span>
-                            </div>
+                        <!-- Pilihan Cakupan Tarif Sistem (Sleek Segmented) -->
+                        <div class="grid grid-cols-2 gap-1.5 p-0.5 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/80 text-[10.5px] my-1" role="group" aria-label="Pilihan Cakupan Tarif">
+                            <button type="button" class="btn-select-tariff-plan py-1 px-1.5 rounded-lg font-bold text-center transition-all border-2 border-[#012D68] dark:border-blue-400 bg-white dark:bg-[#101E35] text-[#012D68] dark:text-blue-300 shadow-xs flex items-center justify-center gap-1" data-plan="with_medicine">
+                                <span>Konsultasi + Obat</span>
+                                <span class="text-[10px] opacity-80 font-normal">($435.00)</span>
+                            </button>
+                            <button type="button" class="btn-select-tariff-plan py-1 px-1.5 rounded-lg font-medium text-center transition-all border border-transparent bg-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 flex items-center justify-center gap-1" data-plan="consultation_only">
+                                <span>Konsultasi Saja</span>
+                                <span class="text-[10px] opacity-80 font-normal">($180.00)</span>
+                            </button>
                         </div>
 
                         <!-- Action Buttons: Rincian & Bayar Sekarang -->
-                        <div id="desktop-action-buttons-unpaid" class="grid grid-cols-2 gap-2 mt-2">
-                            <button type="button" class="btn-open-bill-drawer h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold text-[12px] flex items-center justify-center gap-1.5 transition-colors">
+                        <div id="desktop-action-buttons-unpaid" class="grid grid-cols-2 gap-2 mt-0.5">
+                            <button type="button" class="btn-open-bill-drawer h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-[12px] flex items-center justify-center gap-1.5 transition-colors">
                                 <svg class="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 <span>Rincian Tagihan</span>
                             </button>
-                            <button type="button" class="btn-trigger-payment h-9 rounded-xl bg-gradient-to-r from-[#012D68] to-[#023E8A] hover:brightness-110 active:scale-[0.98] text-white font-bold text-[12px] flex items-center justify-center gap-1.5 transition-all shadow-sm">
+                            <button type="button" class="btn-trigger-payment h-9 rounded-xl bg-gradient-to-r from-[#012D68] to-[#023E8A] dark:from-blue-600 dark:to-blue-700 hover:brightness-110 active:scale-[0.98] text-white font-bold text-[12px] flex items-center justify-center gap-1.5 transition-all shadow-xs">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                                 <span id="desktop-pay-btn-label">Bayar Sekarang ($435.00)</span>
                             </button>
                         </div>
 
                         <!-- Action Buttons when PAID -->
-                        <div id="desktop-action-buttons-paid" class="hidden grid grid-cols-2 gap-2 mt-2">
+                        <div id="desktop-action-buttons-paid" class="hidden grid grid-cols-2 gap-2 mt-0.5">
                             <button type="button" class="btn-open-success-modal h-9 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 text-emerald-800 dark:text-emerald-300 font-semibold text-[12px] flex items-center justify-center gap-1.5 transition-colors">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                                <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 <span>Lihat Kuitansi</span>
                             </button>
                             <button type="button" class="btn-print-receipt h-9 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[12px] flex items-center justify-center gap-1.5 transition-all shadow-xs">
                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                                 <span>Cetak Bukti</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- STATUS TOGGLE / SWITCHER BUTTONS (DI BAWAH BAGIAN) -->
-                    <div class="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-1.5">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                            <span class="text-[10.5px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Tahap Sesi:</span>
-                        </div>
-                        <div class="inline-flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-[11px] gap-1" role="group" aria-label="Pengalih Tahap Sesi">
-                            <button type="button" class="btn-toggle-status-before px-2.5 py-1 rounded-lg font-bold transition-all bg-white dark:bg-[#101E35] text-slate-900 dark:text-white shadow-xs" data-mode="before">
-                                Sebelum Periksa
-                            </button>
-                            <button type="button" class="btn-toggle-status-after px-2.5 py-1 rounded-lg font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all" data-mode="after">
-                                Sesudah Periksa
                             </button>
                         </div>
                     </div>
@@ -520,10 +538,41 @@
             </div>
 
             <!-- Stacked Appointment Card (Solid Pure White Surface with Dynamic Examination / Payment States) -->
-            <div class="stacked-card mx-1 bg-white dark:bg-[#101E35] text-slate-900 dark:text-white rounded-[22px] p-4 shadow-md border border-slate-100 dark:border-slate-800 transition-all duration-300">
+            <div class="stacked-card mx-1 bg-white dark:bg-[#101E35] text-slate-900 dark:text-white rounded-[22px] p-4 shadow-md border border-slate-100 dark:border-slate-800 transition-all duration-300" data-appointment-mode="{{ $appointmentMode }}">
                 
+                <!-- State 0: SELAMAT DATANG (Aktif saat tidak ada tagihan tertunda / sesudah bayar lunas) -->
+                <div id="mobile-state-welcome" class="appointment-state-panel flex flex-col justify-between min-h-[144px] {{ $appointmentMode === 'welcome' ? '' : 'hidden' }}" data-status="Selamat Datang" aria-label="Status Janji Temu: Selamat Datang">
+                    <span class="sr-only">Selamat Datang</span>
+                    <div class="flex items-center justify-between mb-1">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <small class="text-slate-400 dark:text-slate-400 text-[10.5px] font-bold uppercase tracking-wider">Layanan Pasien</small>
+                        </div>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                            Siap Melayani
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 py-1">
+                        <div class="w-11 h-11 rounded-[14px] bg-emerald-50 dark:bg-emerald-950/50 overflow-hidden flex items-center justify-center flex-shrink-0 border border-emerald-100 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <b class="text-[13.5px] text-slate-900 dark:text-white truncate block font-bold">Selamat datang, ada yang bisa dibantu?</b>
+                            <small class="text-slate-500 dark:text-slate-400 text-[11px] block mt-0.5 leading-tight">Konsultasikan kesehatan Anda dengan dokter terbaik kami.</small>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <button type="button" class="h-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-[11px] hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="document.getElementById('open-booking-modal-btn')?.click() || window.showBookingModal?.()">Cari Dokter</button>
+                        <button type="button" class="h-8 rounded-xl bg-[#012D68] hover:bg-[#023E8A] text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs" onclick="document.getElementById('open-booking-modal-btn')?.click() || window.showBookingModal?.()">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            <span>Buat Janji</span>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- State 1: SEBELUM PERIKSA (Default / Upcoming) -->
-                <div id="mobile-state-before" class="appointment-state-panel space-y-3">
+                <div id="mobile-state-before" class="appointment-state-panel flex flex-col justify-between min-h-[144px] {{ $appointmentMode === 'before' ? '' : 'hidden' }}" data-status="Sebelum Periksa" aria-label="Status Janji Temu: Sebelum Periksa">
+                    <span class="sr-only">Sebelum Periksa</span>
                     <div class="flex items-center justify-between mb-1">
                         <small class="text-slate-400 dark:text-slate-400 text-[10.5px] font-bold uppercase tracking-wider">Next Appointment</small>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
@@ -531,17 +580,17 @@
                             Upcoming
                         </span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
+                    <div class="flex items-center gap-3 py-1">
+                        <div class="w-11 h-11 rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
                             <img src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
                         </div>
                         <div class="min-w-0 flex-1">
-                            <b class="text-[14px] text-slate-900 dark:text-white truncate block font-bold">{{ $nextAppointment['doctor_name'] }}</b>
+                            <b class="text-[13.5px] text-slate-900 dark:text-white truncate block font-bold">{{ $nextAppointment['doctor_name'] }}</b>
                             <small class="text-slate-500 dark:text-slate-400 text-[11px] block mt-0.5">{{ $nextAppointment['specialty'] }}</small>
                             <small class="text-[#012D68] dark:text-blue-300 text-[11px] font-semibold block mt-0.5">{{ $nextAppointment['date_time'] }}</small>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-3">
+                    <div class="grid grid-cols-2 gap-2 mt-2">
                         <button type="button" class="btn-reschedule h-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-[11.5px] hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onclick="window.showToast('Jadwal konsultasi dapat diatur melalui menu Jadwal.')">Reschedule</button>
                         <button type="button" class="btn-join-call h-8 rounded-xl bg-[#012D68] hover:bg-[#023E8A] text-white font-bold text-[11.5px] flex items-center justify-center gap-1 shadow-xs" onclick="window.showToast('Menghubungkan ke ruang panggilan video Dr. Saran Mitchell...')">
                             <svg class="app-svg-icon w-3 h-3"><use href="#icon-vid"/></svg>
@@ -551,60 +600,62 @@
                 </div>
 
                 <!-- State 2: SESUDAH PERIKSA (Meminta Pembayaran / Unpaid) -->
-                <div id="mobile-state-after" class="appointment-state-panel hidden space-y-3">
+                <div id="mobile-state-after" class="appointment-state-panel flex flex-col justify-between min-h-[144px] {{ $appointmentMode === 'after' ? '' : 'hidden' }}" data-status="Sesudah Periksa" aria-label="Status Janji Temu: Sesudah Periksa">
+                    <span class="sr-only">Sesudah Periksa</span>
                     <div class="flex items-center justify-between mb-1">
                         <div class="flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
-                            <small class="text-slate-500 dark:text-slate-400 text-[10.5px] font-bold uppercase tracking-wider">Tagihan Pemeriksaan</small>
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
+                            <small class="text-slate-400 dark:text-slate-400 text-[10.5px] font-bold uppercase tracking-wider">Tagihan Pemeriksaan</small>
                         </div>
                         <span id="mobile-unpaid-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
                             UNPAID
                         </span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="relative w-12 h-12 rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
-                            <img src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
+                        <div class="relative w-11 h-11 rounded-[14px] bg-blue-50 dark:bg-blue-950/50 overflow-hidden flex items-end justify-center flex-shrink-0 border border-blue-100 dark:border-blue-900">
+                            <img id="mobile-after-doc-img" src="{{ asset($nextAppointment['image']) }}" alt="{{ $nextAppointment['doctor_name'] }}" class="h-full w-auto object-contain object-bottom">
                             <span class="absolute bottom-0 right-0 bg-emerald-500 text-white rounded-tl-lg p-0.5" title="Selesai">
                                 <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
                             </span>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <b class="text-[13.5px] text-slate-900 dark:text-white truncate block font-bold">{{ $nextAppointment['doctor_name'] }}</b>
-                            <small class="text-slate-500 dark:text-slate-400 text-[10.5px] block">Selesai · Hari ini, 14:55 WIB</small>
-                            <div class="flex items-baseline gap-1 mt-0.5">
-                                <small class="text-slate-400 text-[10.5px]">Tarif:</small>
-                                <b id="mobile-total-display" class="text-[14.5px] font-extrabold text-[#012D68] dark:text-blue-400">$435.00</b>
+                            <b id="mobile-after-doc-name" class="text-[13.5px] text-slate-900 dark:text-white truncate block font-bold">{{ $nextAppointment['doctor_name'] }}</b>
+                            <div class="flex items-center gap-1 text-[10.5px] mt-0.5 truncate">
+                                <span class="text-slate-500 dark:text-slate-400">Selesai · 14:55 WIB</span>
+                                <span class="text-slate-300 dark:text-slate-600">•</span>
+                                <span id="mobile-status-pill" class="text-rose-600 dark:text-rose-400 font-semibold truncate">Menunggu Bayar</span>
+                            </div>
+                            <div class="flex items-baseline justify-between text-[10.5px] mt-0.5">
+                                <div class="flex items-baseline gap-1">
+                                    <span class="text-slate-400 text-[10px]">Total:</span>
+                                    <b id="mobile-total-display" class="text-[13.5px] font-extrabold text-[#012D68] dark:text-blue-400">${{ number_format((float) ($nextAppointment['total_amount'] ?? 435), 2) }}</b>
+                                </div>
+                                <span id="mobile-after-ref-code" class="text-[9.5px] text-slate-400 dark:text-slate-500 font-mono">{{ $nextAppointment['booking_code'] }}</span>
                             </div>
                         </div>
                     </div>
-                    <!-- Pilihan Cakupan Tarif Sistem Mobile -->
-                    <div class="p-2 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700 text-[10.5px] space-y-1">
-                        <div class="flex items-center justify-between text-slate-700 dark:text-slate-300">
-                            <span class="font-bold text-[10px] text-slate-500 uppercase">Cakupan Tarif:</span>
-                            <span id="mobile-status-pill" class="font-bold text-rose-600 dark:text-rose-400">Menunggu Pembayaran</span>
-                        </div>
-                        <div class="grid grid-cols-2 gap-1 pt-0.5">
-                            <button type="button" class="btn-select-tariff-plan p-1 rounded-lg border-2 border-[#012D68] bg-white dark:bg-[#101E35] text-[#012D68] dark:text-blue-300 font-bold text-[10px] text-left transition-all" data-plan="with_medicine">
-                                <span>Konsultasi + Obat</span>
-                                <small class="block text-slate-500">$435.00</small>
-                            </button>
-                            <button type="button" class="btn-select-tariff-plan p-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-slate-500 dark:text-slate-400 font-semibold text-[10px] text-left transition-all" data-plan="consultation_only">
-                                <span>Konsultasi Saja</span>
-                                <small class="block text-slate-500">$180.00</small>
-                            </button>
-                        </div>
+                    <!-- Pilihan Cakupan Tarif Sistem Mobile (Sleek Segmented) -->
+                    <div class="grid grid-cols-2 gap-1 p-0.5 bg-slate-100 dark:bg-slate-800/80 rounded-xl border border-slate-200/80 dark:border-slate-700/80 text-[10px] my-1">
+                        <button type="button" class="btn-select-tariff-plan py-1 px-1 rounded-lg border-2 border-[#012D68] dark:border-blue-400 bg-white dark:bg-[#101E35] text-[#012D68] dark:text-blue-300 font-bold text-center transition-all shadow-xs flex items-center justify-center gap-1" data-plan="with_medicine">
+                            <span>+ Obat</span>
+                            <span class="opacity-80">($435)</span>
+                        </button>
+                        <button type="button" class="btn-select-tariff-plan py-1 px-1 rounded-lg border border-transparent bg-transparent text-slate-500 dark:text-slate-400 font-medium text-center transition-all hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1" data-plan="consultation_only">
+                            <span>Konsul Saja</span>
+                            <span class="opacity-80">($180)</span>
+                        </button>
                     </div>
-                    <div id="mobile-action-buttons-unpaid" class="grid grid-cols-2 gap-2 mt-2">
-                        <button type="button" class="btn-open-bill-drawer h-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-[11px] flex items-center justify-center gap-1 transition-colors">
+                    <div id="mobile-action-buttons-unpaid" class="grid grid-cols-2 gap-2 mt-0.5">
+                        <button type="button" class="btn-open-bill-drawer h-8 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-[11px] flex items-center justify-center gap-1 transition-colors">
                             <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             <span>Rincian</span>
                         </button>
-                        <button type="button" class="btn-trigger-payment h-8 rounded-xl bg-gradient-to-r from-[#012D68] to-[#023E8A] text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs">
+                        <button type="button" class="btn-trigger-payment h-8 rounded-xl bg-gradient-to-r from-[#012D68] to-[#023E8A] dark:from-blue-600 dark:to-blue-700 text-white font-bold text-[11px] flex items-center justify-center gap-1 shadow-xs">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                            <span>Bayar</span>
+                            <span id="mobile-pay-btn-label">Bayar ($435.00)</span>
                         </button>
                     </div>
-                    <div id="mobile-action-buttons-paid" class="hidden grid grid-cols-2 gap-2 mt-2">
+                    <div id="mobile-action-buttons-paid" class="hidden grid grid-cols-2 gap-2 mt-0.5">
                         <button type="button" class="btn-open-success-modal h-8 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 font-semibold text-[11px] flex items-center justify-center gap-1">
                             <svg class="w-3 h-3 text-emerald-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                             <span>Lihat Kuitansi</span>
@@ -612,19 +663,6 @@
                         <button type="button" class="btn-print-receipt h-8 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] flex items-center justify-center gap-1">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                             <span>Cetak Bukti</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- STATUS TOGGLE / SWITCHER BUTTONS (DI BAWAH BAGIAN) -->
-                <div class="mt-2.5 pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-1">
-                    <span class="text-[10px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Tahap Sesi:</span>
-                    <div class="inline-flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-xl border border-slate-200/80 dark:border-slate-700 text-[10.5px] gap-1" role="group">
-                        <button type="button" class="btn-toggle-status-before px-2 py-0.5 rounded-lg font-bold transition-all bg-white dark:bg-[#101E35] text-slate-900 dark:text-white shadow-xs" data-mode="before">
-                            Sebelum Periksa
-                        </button>
-                        <button type="button" class="btn-toggle-status-after px-2 py-0.5 rounded-lg font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-all" data-mode="after">
-                            Sesudah Periksa
                         </button>
                     </div>
                 </div>

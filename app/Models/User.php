@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -39,6 +40,26 @@ class User extends Authenticatable
     public function isDoctor(): bool
     {
         return $this->role === 'doctor';
+    }
+
+    /**
+     * Doctor profile associated with this user account.
+     *
+     * @return HasOne<Doctor, $this>
+     */
+    public function doctor(): HasOne
+    {
+        return $this->hasOne(Doctor::class);
+    }
+
+    /**
+     * Patient profile associated with this user account.
+     *
+     * @return HasOne<Patient, $this>
+     */
+    public function patient(): HasOne
+    {
+        return $this->hasOne(Patient::class);
     }
 
     /**

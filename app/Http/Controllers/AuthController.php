@@ -95,11 +95,18 @@ class AuthController extends Controller
     {
         $email = match ($role) {
             'admin' => 'admin@aihealth.com',
-            'doctor', 'dokter' => 'dokter@aihealth.com',
+            'lina' => 'lina@aihealth.com',
+            'saran' => 'saran@aihealth.com',
+            'anaya', 'doctor', 'dokter' => 'anaya@aihealth.com',
             default => 'user@aihealth.com',
         };
 
         $user = User::where('email', $email)->first();
+
+        // Fallback for doctor default if anaya@ is not yet seeded
+        if (! $user && in_array($role, ['anaya', 'doctor', 'dokter'])) {
+            $user = User::where('email', 'dokter@aihealth.com')->first();
+        }
 
         if ($user) {
             Auth::login($user);
@@ -110,7 +117,7 @@ class AuthController extends Controller
             }
 
             if ($user->isDoctor()) {
-                return redirect()->route('doctor.dashboard')->with('success', 'Masuk cepat sebagai Dokter ('.$user->name.')');
+                return redirect()->route('doctor.dashboard')->with('success', 'Masuk cepat sebagai '.$user->name);
             }
 
             return redirect()->route('home')->with('success', 'Masuk cepat sebagai Pasien / User ('.$user->name.')');

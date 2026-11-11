@@ -266,7 +266,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Open & Close Booking Intake Modal
   function openBookingModal() {
-    if (!currentDoctor) return;
+    if (!currentDoctor) {
+      currentDoctor = {
+        id: 3,
+        name: 'Dr. Saran Mitchell',
+        specialty: 'Orthopedist',
+        image: 'images/doctors/doctor-3.png',
+        initials: 'SM'
+      };
+    }
 
     // Sync modal doctor info
     if (modalDocImg) {
@@ -389,8 +397,31 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const patientName = regPatientName ? regPatientName.value.trim() : 'Pasien';
+      const patientPhone = regPatientPhone ? regPatientPhone.value.trim() : '0812-9988-7766';
       const durationVal = regDuration ? regDuration.value : '1 - 3 Hari';
       const severityVal = regSeverity ? regSeverity.value : 'Sedang';
+      const notesVal = regNotes ? regNotes.value.trim() : '';
+
+      // Persist booking to database via API
+      fetch('/booking', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+        },
+        body: JSON.stringify({
+          patient_name: patientName,
+          phone: patientPhone,
+          symptoms: symptomsVal,
+          duration: durationVal,
+          severity: severityVal,
+          notes: notesVal,
+          doctor_id: currentDoctor?.id,
+          booking_time: selectedTime,
+          booking_date: `${selectedDayName} ${selectedDate}, 2026`
+        })
+      }).catch(() => {});
 
       // Visual feedback loading state
       const originalText = btnConfirmBooking.innerHTML;
@@ -430,6 +461,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (mDocSpecialty) mDocSpecialty.textContent = currentDoctor.specialty;
           if (mDocDateTime) mDocDateTime.textContent = `${selectedDayName} ${selectedDate}, 2026 · ${selectedTime}`;
         }
+
+        // Automatically switch card to 'before' (Gambar 3: NEXT APPOINTMENT Upcoming)
+        setAppointmentMode('before', false);
 
         // Show Rich Success Toast
         showToast(`Pendaftaran Berhasil! Sesi dengan ${currentDoctor.name} dijadwalkan pada ${selectedDayName} ${selectedDate} · ${selectedTime} (${durationVal})`);
@@ -517,69 +551,147 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
-  // KLINIK MARISTELLA: APPOINTMENT STATUS SWITCHER & BILLING DRAWER / MODAL
+  // KLINIK MARISTELLA: AUTOMATIC APPOINTMENT STATUS & BILLING DRAWER / MODAL
   // ==========================================================================
 
-  let currentAppointmentMode = 'before'; // 'before' | 'after'
-  let isBillPaid = false;
-
+  const desktopStateWelcome = document.getElementById('desktop-state-welcome');
+  const mobileStateWelcome = document.getElementById('mobile-state-welcome');
   const desktopStateBefore = document.getElementById('desktop-state-before');
   const desktopStateAfter = document.getElementById('desktop-state-after');
   const mobileStateBefore = document.getElementById('mobile-state-before');
   const mobileStateAfter = document.getElementById('mobile-state-after');
 
-  const btnToggleBeforeAll = document.querySelectorAll('.btn-toggle-status-before');
-  const btnToggleAfterAll = document.querySelectorAll('.btn-toggle-status-after');
+  const initialModeAttr = document.querySelector('.next-appt-card')?.dataset?.appointmentMode;
+  let currentAppointmentMode = initialModeAttr || 'welcome';
+  let isBillPaid = (currentAppointmentMode === 'welcome');
 
   function setAppointmentMode(mode, showNotification = true) {
     currentAppointmentMode = mode;
 
-    if (mode === 'before') {
+    if (mode === 'welcome') {
+      desktopStateWelcome?.classList.remove('hidden');
+      desktopStateBefore?.classList.add('hidden');
+      desktopStateAfter?.classList.add('hidden');
+
+      mobileStateWelcome?.classList.remove('hidden');
+      mobileStateBefore?.classList.add('hidden');
+      mobileStateAfter?.classList.add('hidden');
+
+      if (showNotification) {
+        showToast('Tagihan telah lunas. Selamat datang di Klinik Maristella!');
+      }
+    } else if (mode === 'before') {
+      desktopStateWelcome?.classList.add('hidden');
       desktopStateBefore?.classList.remove('hidden');
       desktopStateAfter?.classList.add('hidden');
+
+      mobileStateWelcome?.classList.add('hidden');
       mobileStateBefore?.classList.remove('hidden');
       mobileStateAfter?.classList.add('hidden');
 
-      btnToggleBeforeAll.forEach(btn => {
-        btn.classList.add('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
-        btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-semibold');
-      });
-      btnToggleAfterAll.forEach(btn => {
-        btn.classList.remove('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
-        btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-semibold');
-      });
-
       if (showNotification) {
-        showToast('Tahap Janji Temu: Menunggu waktu konsultasi (Sebelum Periksa)');
+        showToast('Janji Temu Aktif: Menunggu jadwal konsultasi dokter.');
       }
-    } else {
+    } else { // 'after'
+      desktopStateWelcome?.classList.add('hidden');
       desktopStateBefore?.classList.add('hidden');
       desktopStateAfter?.classList.remove('hidden');
+
+      mobileStateWelcome?.classList.add('hidden');
       mobileStateBefore?.classList.add('hidden');
       mobileStateAfter?.classList.remove('hidden');
 
-      btnToggleAfterAll.forEach(btn => {
-        btn.classList.add('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
-        btn.classList.remove('text-slate-500', 'dark:text-slate-400', 'font-semibold');
-      });
-      btnToggleBeforeAll.forEach(btn => {
-        btn.classList.remove('bg-white', 'dark:bg-[#101E35]', 'text-slate-900', 'dark:text-white', 'shadow-xs', 'font-bold');
-        btn.classList.add('text-slate-500', 'dark:text-slate-400', 'font-semibold');
-      });
-
       if (showNotification) {
-        showToast(isBillPaid ? 'Tahap Janji Temu: Pemeriksaan Selesai (Sudah Lunas)' : 'Tahap Janji Temu: Pemeriksaan Selesai (Meminta Pembayaran)');
+        showToast('Pemeriksaan Selesai! Tagihan pemeriksaan Anda kini tersedia.');
       }
     }
   }
 
-  btnToggleBeforeAll.forEach(btn => {
-    btn.addEventListener('click', () => setAppointmentMode('before'));
+  // Expose for external or programmatic triggering
+  window.setAppointmentMode = setAppointmentMode;
+  window.openBookingModal = openBookingModal;
+
+  // ==========================================================================
+  // AUTOMATIC REAL-TIME EXAMINATION STATUS SYNC
+  // ==========================================================================
+  async function syncAppointmentStatus(notifyOnExamination = true) {
+    try {
+      const res = await fetch('/appointment-status', {
+        headers: {
+          'Accept': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data && data.mode) {
+        if (data.mode === 'after') {
+          window.currentBookingCode = data.booking_code || '#BILL00124';
+          window.currentBookingId = data.booking_id;
+
+          const desktopDoc = document.getElementById('desktop-after-doc-name') || document.querySelector('#desktop-state-after b');
+          if (desktopDoc && data.doctor_name) desktopDoc.textContent = data.doctor_name;
+          const mobileDoc = document.getElementById('mobile-after-doc-name') || document.querySelector('#mobile-state-after b');
+          if (mobileDoc && data.doctor_name) mobileDoc.textContent = data.doctor_name;
+
+          const desktopImg = document.getElementById('desktop-after-doc-img') || document.querySelector('#desktop-state-after img');
+          if (desktopImg && data.image) desktopImg.src = data.image;
+          const mobileImg = document.getElementById('mobile-after-doc-img') || document.querySelector('#mobile-state-after img');
+          if (mobileImg && data.image) mobileImg.src = data.image;
+
+          const desktopRef = document.getElementById('desktop-after-ref-code');
+          if (desktopRef && data.booking_code) desktopRef.textContent = 'Ref: ' + data.booking_code;
+          const mobileRef = document.getElementById('mobile-after-ref-code');
+          if (mobileRef && data.booking_code) mobileRef.textContent = data.booking_code;
+
+          if (data.total_amount) {
+            const formattedTotal = `$${Number(data.total_amount).toFixed(2)}`;
+            const dTot = document.getElementById('desktop-total-display');
+            if (dTot) dTot.textContent = formattedTotal;
+            const mTot = document.getElementById('mobile-total-display');
+            if (mTot) mTot.textContent = formattedTotal;
+            const dPay = document.getElementById('desktop-pay-btn-label');
+            if (dPay) dPay.textContent = `Bayar Sekarang (${formattedTotal})`;
+          }
+        } else if (data.mode === 'before') {
+          window.currentBookingCode = data.booking_code;
+          window.currentBookingId = data.booking_id;
+
+          const desktopBeforeDoc = document.querySelector('#desktop-state-before b');
+          if (desktopBeforeDoc && data.doctor_name) desktopBeforeDoc.textContent = data.doctor_name;
+          const desktopBeforeImg = document.querySelector('#desktop-state-before img');
+          if (desktopBeforeImg && data.image) desktopBeforeImg.src = data.image;
+
+          const mobileBeforeDoc = document.querySelector('#mobile-state-before b');
+          if (mobileBeforeDoc && data.doctor_name) mobileBeforeDoc.textContent = data.doctor_name;
+          const mobileBeforeImg = document.querySelector('#mobile-state-before img');
+          if (mobileBeforeImg && data.image) mobileBeforeImg.src = data.image;
+        }
+
+        if (data.mode !== currentAppointmentMode) {
+          setAppointmentMode(data.mode, false);
+          if (data.mode === 'after' && notifyOnExamination) {
+            showToast('Pemeriksaan Selesai! Dokter telah menyelesaikan sesi konsultasi Anda. Tagihan siap dibayar.');
+          }
+        }
+      }
+    } catch (_) {
+      // Ignore background sync errors
+    }
+  }
+
+  // Poll periodically every 4 seconds to automatically detect when doctor completes examination
+  setInterval(() => syncAppointmentStatus(true), 4000);
+
+  // Listen for instant cross-tab notification when doctor submits SOAP
+  window.addEventListener('storage', (event) => {
+    if (event.key === 'klinik_doctor_examination_completed') {
+      syncAppointmentStatus(true);
+    }
   });
 
-  btnToggleAfterAll.forEach(btn => {
-    btn.addEventListener('click', () => setAppointmentMode('after'));
-  });
+  // Also sync immediately when window regains focus
+  window.addEventListener('focus', () => syncAppointmentStatus(true));
 
   // Drawer and Modal Elements
   const billOverlay = document.getElementById('overlay');
@@ -847,15 +959,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const desktopPayBtnLabel = document.getElementById('desktop-pay-btn-label');
     if (desktopPayBtnLabel) desktopPayBtnLabel.textContent = `Bayar Sekarang (${rate.formatted})`;
 
+    const mobilePayBtnLabel = document.getElementById('mobile-pay-btn-label');
+    if (mobilePayBtnLabel) mobilePayBtnLabel.textContent = `Bayar (${rate.formatted})`;
+
     // Update Plan Buttons on Card & Drawer
     document.querySelectorAll('.btn-select-tariff-plan').forEach(btn => {
       const isSelected = btn.dataset.plan === plan;
       if (isSelected) {
-        btn.classList.add('border-2', 'border-[#012D68]', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
-        btn.classList.remove('border-slate-200', 'dark:border-slate-700', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-semibold');
+        btn.classList.add('border-2', 'border-[#012D68]', 'dark:border-blue-400', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
+        btn.classList.remove('border-slate-200', 'dark:border-slate-700', 'border-transparent', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-semibold', 'font-medium');
       } else {
-        btn.classList.remove('border-2', 'border-[#012D68]', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
-        btn.classList.add('border', 'border-slate-200', 'dark:border-slate-700', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-semibold');
+        btn.classList.remove('border-2', 'border-[#012D68]', 'dark:border-blue-400', 'bg-white', 'dark:bg-[#101E35]', 'text-[#012D68]', 'dark:text-blue-300', 'font-bold', 'shadow-xs');
+        btn.classList.add('border', 'border-transparent', 'bg-transparent', 'text-slate-500', 'dark:text-slate-400', 'font-medium');
       }
     });
 
@@ -950,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Pay Confirmation Process
+  // Pay Confirmation Process (Saves to database and transforms card to Welcome state)
   payBtn?.addEventListener('click', () => {
     const rate = TARIFF_RATES[currentTariffPlan] || TARIFF_RATES.with_medicine;
     const originalText = payBtn.innerHTML;
@@ -960,62 +1075,60 @@ document.addEventListener('DOMContentLoaded', () => {
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
       </svg>
-      <span>Memproses ${rate.formatted}...</span>
+      <span>Menyimpan Pembayaran ${rate.formatted}...</span>
     `;
 
-    setTimeout(() => {
-      isBillPaid = true;
-      payBtn.disabled = false;
-      payBtn.innerHTML = originalText;
+    fetch('/payment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
+      },
+      body: JSON.stringify({
+        booking_id: window.currentBookingId || null,
+        invoice_number: window.currentBookingCode || '#BILL00124',
+        tariff_plan: currentTariffPlan,
+        amount: rate.amount || 435.00,
+        payment_method: 'cash',
+        notes: noteInput ? noteInput.value : 'Pembayaran tagihan via portal pasien'
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        isBillPaid = true;
+        payBtn.disabled = false;
+        payBtn.innerHTML = originalText;
 
-      closeAllBillPopups();
+        closeAllBillPopups();
 
-      // Update Desktop Elements
-      const dBadge = document.getElementById('desktop-unpaid-badge');
-      if (dBadge) {
-        dBadge.className = 'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10.5px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-        dBadge.textContent = 'PAID / LUNAS';
-      }
-      const dStatusPill = document.getElementById('desktop-status-pill');
-      if (dStatusPill) {
-        dStatusPill.className = 'font-bold text-emerald-600 dark:text-emerald-400';
-        dStatusPill.textContent = `Lunas: ${rate.packageName}`;
-      }
-      document.getElementById('desktop-action-buttons-unpaid')?.classList.add('hidden');
-      document.getElementById('desktop-action-buttons-paid')?.classList.remove('hidden');
+        // Transforms card to 'welcome' (removes Tagihan card Gambar 2)
+        setAppointmentMode('welcome', false);
 
-      // Update Mobile Elements
-      const mBadge = document.getElementById('mobile-unpaid-badge');
-      if (mBadge) {
-        mBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800';
-        mBadge.textContent = 'PAID';
-      }
-      const mStatusPill = document.getElementById('mobile-status-pill');
-      if (mStatusPill) {
-        mStatusPill.className = 'font-bold text-emerald-600 dark:text-emerald-400';
-        mStatusPill.textContent = 'Lunas';
-      }
-      document.getElementById('mobile-action-buttons-unpaid')?.classList.add('hidden');
-      document.getElementById('mobile-action-buttons-paid')?.classList.remove('hidden');
+        showToast(`Pembayaran ${rate.formatted} (${rate.packageName}) berhasil dicatat di database!`);
 
-      // Update Drawer Badge & Paid Actions
-      const drawerBadge = document.getElementById('drawer-bill-badge');
-      if (drawerBadge) {
-        drawerBadge.className = 'badge paid';
-        drawerBadge.textContent = 'PAID';
-      }
-      const drawerPaidActions = document.getElementById('drawer-paid-actions');
-      const drawerUnpaidActions = document.getElementById('drawer-unpaid-actions');
-      if (drawerPaidActions) drawerPaidActions.classList.remove('hidden');
-      if (drawerUnpaidActions) drawerUnpaidActions.classList.add('hidden');
+        // Automatically display the Payment Success Receipt Modal (Zendenta Adapted)
+        setTimeout(() => {
+          openPaymentSuccessModal();
+        }, 300);
 
-      showToast(`Pembayaran berhasil diproses! Tagihan #BILL00124 (${rate.packageName}) sebesar ${rate.formatted} telah lunas.`);
+        try {
+          localStorage.setItem('klinik_payment_completed', Date.now().toString());
+        } catch (e) {}
+      })
+      .catch(() => {
+        isBillPaid = true;
+        payBtn.disabled = false;
+        payBtn.innerHTML = originalText;
 
-      // Automatically display the Payment Success Receipt Modal (Zendenta Adapted)
-      setTimeout(() => {
-        openPaymentSuccessModal();
-      }, 300);
-    }, 600);
+        closeAllBillPopups();
+        setAppointmentMode('welcome', false);
+        showToast(`Pembayaran ${rate.formatted} (${rate.packageName}) telah lunas.`);
+
+        setTimeout(() => {
+          openPaymentSuccessModal();
+        }, 300);
+      });
   });
 
   window.printInvoiceReceipt = function() {

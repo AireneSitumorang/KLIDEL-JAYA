@@ -349,7 +349,7 @@
     }
     .demo-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 6px;
     }
     .demo-pill {
@@ -586,27 +586,41 @@
 
         <!-- Demo Quick Access Section -->
         <div class="demo-section">
-          <div class="demo-title">Akses Cepat Demo (1-Klik)</div>
+          <div class="demo-title">Akses Cepat Demo Semua Akun (1-Klik)</div>
           <div class="demo-grid">
             <a href="{{ route('quick-login', 'user') }}" class="demo-pill" title="Masuk langsung sebagai Pasien">
               <span class="demo-avatar user-av">RA</span>
               <span class="demo-text">
-                <strong>Pasien</strong>
+                <strong>Pasien (Rina)</strong>
                 <small>user@aihealth.com</small>
-              </span>
-            </a>
-            <a href="{{ route('quick-login', 'doctor') }}" class="demo-pill" title="Masuk langsung sebagai Dokter">
-              <span class="demo-avatar doc-av">AK</span>
-              <span class="demo-text">
-                <strong>Dr. Anaya</strong>
-                <small>dokter@aihealth.com</small>
               </span>
             </a>
             <a href="{{ route('quick-login', 'admin') }}" class="demo-pill" title="Masuk langsung sebagai Administrator">
               <span class="demo-avatar admin-av">AL</span>
               <span class="demo-text">
-                <strong>Admin</strong>
+                <strong>Administrator</strong>
                 <small>admin@aihealth.com</small>
+              </span>
+            </a>
+            <a href="{{ route('quick-login', 'lina') }}" class="demo-pill" title="Masuk sebagai Dr. Lina Wijaya (Kardiologi)">
+              <span class="demo-avatar doc-av" style="border-color:#E11D48; color:#E11D48; background:#FFF1F2;">LW</span>
+              <span class="demo-text">
+                <strong>Dr. Lina (Jantung)</strong>
+                <small>lina@aihealth.com</small>
+              </span>
+            </a>
+            <a href="{{ route('quick-login', 'anaya') }}" class="demo-pill" title="Masuk sebagai Dr. Anaya Kapoor (Neurologi)">
+              <span class="demo-avatar doc-av">AK</span>
+              <span class="demo-text">
+                <strong>Dr. Anaya (Saraf)</strong>
+                <small>anaya@aihealth.com</small>
+              </span>
+            </a>
+            <a href="{{ route('quick-login', 'saran') }}" class="demo-pill" style="grid-column: span 2;" title="Masuk sebagai Dr. Saran Mitchell (Ortopedi)">
+              <span class="demo-avatar doc-av" style="border-color:#012D68; color:#012D68; background:#EFF6FF;">SM</span>
+              <span class="demo-text">
+                <strong>Dr. Saran Mitchell (Ortopedi)</strong>
+                <small>saran@aihealth.com</small>
               </span>
             </a>
           </div>

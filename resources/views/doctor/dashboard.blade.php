@@ -86,6 +86,11 @@
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
       <span>{{ session('success') }}</span>
     </div>
+    <script>
+      try {
+        localStorage.setItem('klinik_doctor_examination_completed', Date.now().toString());
+      } catch (e) {}
+    </script>
   @endif
 
   @if($errors->any())
@@ -605,6 +610,11 @@
     window.addEventListener('DOMContentLoaded', () => {
       const tabParam = new URLSearchParams(window.location.search).get('tab');
       if (tabParam) switchMainTab(tabParam);
+      @if(session('success'))
+        try {
+          localStorage.setItem('klinik_doctor_examination_completed', Date.now().toString());
+        } catch (e) {}
+      @endif
     });
   </script>
 

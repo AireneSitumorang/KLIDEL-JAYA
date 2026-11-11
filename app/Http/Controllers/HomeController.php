@@ -2,7 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Booking;
+use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Payment;
+use App\Models\Poli;
+use App\Models\Queue;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class HomeController extends Controller
 {
@@ -21,71 +30,451 @@ class HomeController extends Controller
             'is_doctor' => $authUser?->isDoctor() ?? false,
         ];
 
-        $nextAppointment = [
-            'doctor_name' => 'Dr. Saran Mitchell',
-            'specialty' => 'Orthopedist',
-            'date_time' => 'Aug 14, 2026 · 2:30 PM',
-            'initials' => 'SM',
-            'image' => 'images/doctors/doctor-3.png',
-        ];
-
+        // 1. Categories / Specialties from Database with Fallback
         $categories = [
             ['id' => 'all', 'name' => 'Semua'],
-            ['id' => 'Cardiologist', 'name' => 'Heart'],
-            ['id' => 'Neurologist', 'name' => 'Brain expert'],
-            ['id' => 'Orthopedist', 'name' => 'Bone'],
         ];
 
-        $doctors = [
-            [
-                'id' => 1,
-                'name' => 'Dr. Lina Wijaya',
-                'specialty' => 'Cardiologist',
-                'category' => 'Cardiologist',
-                'rating' => 4.9,
-                'price' => '$16.5',
-                'price_num' => 16.5,
-                'initials' => 'LW',
-                'image' => 'images/doctors/doctor-1.png',
-                'availability' => '9AM - 8PM',
-                'experience' => '10 years',
-                'patients' => '3.8k Up',
-            ],
-            [
-                'id' => 2,
-                'name' => 'Dr. Anaya Kapoor',
-                'specialty' => 'Neurologist',
-                'category' => 'Neurologist',
-                'rating' => 4.8,
-                'price' => '$18.0',
-                'price_num' => 18.0,
-                'initials' => 'AK',
-                'image' => 'images/doctors/doctor-2.png',
-                'availability' => '8AM - 6PM',
-                'experience' => '12 years',
-                'patients' => '4.6k Up',
-            ],
-            [
-                'id' => 3,
-                'name' => 'Dr. Saran Mitchell',
-                'specialty' => 'Orthopedist',
-                'category' => 'Orthopedist',
-                'rating' => 4.7,
-                'price' => '$19.0',
-                'price_num' => 19.0,
-                'initials' => 'SM',
-                'image' => 'images/doctors/doctor-3.png',
-                'availability' => '10AM - 7PM',
-                'experience' => '15 years',
-                'patients' => '5.2k Up',
-            ],
+        if (Schema::hasTable('polis')) {
+            $polis = Poli::all();
+            if ($polis->isNotEmpty()) {
+                foreach ($polis as $poli) {
+                    $categories[] = [
+                        'id' => $poli->slug,
+                        'name' => $poli->name_en ?? $poli->nama_poli,
+                    ];
+                }
+            }
+        }
+
+        if (count($categories) === 1) {
+            $categories = [
+                ['id' => 'all', 'name' => 'Semua'],
+                ['id' => 'Cardiologist', 'name' => 'Heart'],
+                ['id' => 'Neurologist', 'name' => 'Brain expert'],
+                ['id' => 'Orthopedist', 'name' => 'Bone'],
+            ];
+        }
+
+        // 2. Doctors from Database with Fallback
+        $doctors = [];
+        if (Schema::hasTable('doctors')) {
+            $doctorModels = Doctor::with('poli')->get();
+            if ($doctorModels->isNotEmpty()) {
+                $doctors = $doctorModels->map(function (Doctor $doc): array {
+                    return [
+                        'id' => $doc->id,
+                        'name' => $doc->nama_dokter,
+                        'specialty' => $doc->spesialisasi,
+                        'category' => $doc->poli?->slug ?? $doc->spesialisasi,
+                        'rating' => (float) $doc->rating,
+                        'price' => $doc->price,
+                        'price_num' => (float) $doc->price_num,
+                        'initials' => $doc->initials ?? 'DR',
+                        'image' => $doc->image ?? 'images/doctors/doctor-1.png',
+                        'availability' => $doc->availability,
+                        'experience' => $doc->experience,
+                        'patients' => $doc->patients,
+                    ];
+                })->toArray();
+            }
+        }
+
+        if (empty($doctors)) {
+            $doctors = [
+                [
+                    'id' => 1,
+                    'name' => 'Dr. Lina Wijaya',
+                    'specialty' => 'Cardiologist',
+                    'category' => 'Cardiologist',
+                    'rating' => 4.9,
+                    'price' => '$16.5',
+                    'price_num' => 16.5,
+                    'initials' => 'LW',
+                    'image' => 'images/doctors/doctor-1.png',
+                    'availability' => '9AM - 8PM',
+                    'experience' => '10 years',
+                    'patients' => '3.8k Up',
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'Dr. Anaya Kapoor',
+                    'specialty' => 'Neurologist',
+                    'category' => 'Neurologist',
+                    'rating' => 4.8,
+                    'price' => '$18.0',
+                    'price_num' => 18.0,
+                    'initials' => 'AK',
+                    'image' => 'images/doctors/doctor-2.png',
+                    'availability' => '8AM - 6PM',
+                    'experience' => '12 years',
+                    'patients' => '4.6k Up',
+                ],
+                [
+                    'id' => 3,
+                    'name' => 'Dr. Saran Mitchell',
+                    'specialty' => 'Orthopedist',
+                    'category' => 'Orthopedist',
+                    'rating' => 4.7,
+                    'price' => '$19.0',
+                    'price_num' => 19.0,
+                    'initials' => 'SM',
+                    'image' => 'images/doctors/doctor-3.png',
+                    'availability' => '10AM - 7PM',
+                    'experience' => '15 years',
+                    'patients' => '5.2k Up',
+                ],
+            ];
+        }
+
+        // 3. Resolve active booking and determine whether doctor has examined the patient
+        $appointmentData = $this->resolveAppointmentState();
+        $latestBooking = $appointmentData['booking'];
+        $appointmentMode = $appointmentData['mode'];
+        $isDoctorExamined = $appointmentData['doctor_examined'];
+
+        $nextAppointment = [
+            'doctor_name' => $latestBooking?->doctor?->nama_dokter ?? 'Dr. Saran Mitchell',
+            'specialty' => $latestBooking?->doctor?->spesialisasi ?? 'Orthopedist',
+            'date_time' => $latestBooking?->booking_time ?? 'Aug 14, 2026 · 2:30 PM',
+            'initials' => $latestBooking?->doctor?->initials ?? 'SM',
+            'image' => $latestBooking?->doctor?->image ?? 'images/doctors/doctor-3.png',
+            'booking_code' => $latestBooking?->booking_code ?? '#BILL00124',
+            'status' => $latestBooking?->status ?? ($isDoctorExamined ? 'completed' : 'confirmed'),
+            'total_amount' => $latestBooking?->total_amount ?? 435.00,
+            'payment_status' => $latestBooking?->payment_status ?? 'unpaid',
         ];
 
         return view('home', [
             'user' => $user,
             'nextAppointment' => $nextAppointment,
+            'latestBooking' => $latestBooking,
+            'appointmentMode' => $appointmentMode,
+            'isDoctorExamined' => $isDoctorExamined,
             'categories' => $categories,
             'doctors' => $doctors,
+        ]);
+    }
+
+    /**
+     * Resolve the active appointment and determine whether doctor has examined the patient.
+     *
+     * @return array{booking: ?Booking, mode: string, doctor_examined: bool}
+     */
+    public function resolveAppointmentState(): array
+    {
+        if (! Schema::hasTable('bookings')) {
+            return [
+                'booking' => null,
+                'mode' => 'welcome',
+                'doctor_examined' => false,
+            ];
+        }
+
+        $authUser = auth()->user();
+        $sessionBookingId = session('current_booking_id');
+        $lastExaminedBookingId = session('last_examined_booking_id');
+        $justPaidBookingId = session('just_paid_booking_id');
+
+        if ($justPaidBookingId) {
+            $paidBooking = Booking::with(['doctor', 'patient', 'medicalRecord'])->find($justPaidBookingId)
+                ?: Booking::with(['doctor', 'patient', 'medicalRecord'])->latest('id')->first();
+
+            return [
+                'booking' => $paidBooking,
+                'mode' => 'welcome',
+                'doctor_examined' => true,
+            ];
+        }
+
+        // Check if logged-in user is a patient
+        $patient = null;
+        if (Schema::hasTable('patients') && $authUser) {
+            $patient = Patient::where('user_id', $authUser->id)->latest('id')->first();
+            if (! $patient && $authUser->role === 'patient') {
+                $patient = Patient::where('full_name', $authUser->name)->latest('id')->first();
+            }
+        }
+
+        $booking = null;
+
+        // 1. Session booking takes highest precedence
+        if ($sessionBookingId) {
+            $booking = Booking::with(['doctor', 'patient', 'medicalRecord'])->find($sessionBookingId);
+        }
+
+        // 2. Doctor examined booking in session
+        if (! $booking && $lastExaminedBookingId) {
+            $booking = Booking::with(['doctor', 'patient', 'medicalRecord'])->find($lastExaminedBookingId);
+        }
+
+        // 3. For authenticated patient: look at THEIR latest booking
+        if (! $booking && $patient) {
+            $booking = Booking::with(['doctor', 'patient', 'medicalRecord'])
+                ->where('patient_id', $patient->id)
+                ->latest('id')
+                ->first();
+        }
+
+        // 4. Global clinic state: look at the clinic's LATEST booking
+        if (! $booking) {
+            $booking = Booking::with(['doctor', 'patient', 'medicalRecord'])
+                ->latest('id')
+                ->first();
+        }
+
+        // Fallback to #BILL00124 if no bookings in DB
+        if (! $booking) {
+            $booking = Booking::with(['doctor', 'patient', 'medicalRecord'])
+                ->where('booking_code', '#BILL00124')
+                ->first();
+        }
+
+        // Determine State:
+        // - 'welcome' : if payment is done (or just paid), or no active bill/upcoming booking
+        // - 'after'   : if doctor has completed examination and bill is UNPAID (Gambar 1 / 2)
+        // - 'before'  : if patient has upcoming booking waiting for doctor examination (Gambar 3)
+        $doctorExamined = false;
+        $mode = 'welcome';
+
+        if ($booking) {
+            $hasMedicalRecord = Schema::hasTable('medical_records') && $booking->medicalRecord()->exists();
+            $isStatusCompleted = ($booking->status === 'completed');
+            $doctorExamined = $isStatusCompleted || $hasMedicalRecord;
+
+            $isPaid = ($booking->payment_status === 'paid')
+                || (Schema::hasTable('payments') && (
+                    $booking->payments()->where('status', 'confirmed')->exists()
+                    || Payment::where('invoice_number', $booking->booking_code)->where('status', 'confirmed')->exists()
+                ));
+
+            if ($isPaid) {
+                // If paid, show Welcome card ("Selamat datang, ada yang bisa dibantu?")
+                $mode = 'welcome';
+            } elseif ($doctorExamined && $booking->payment_status === 'unpaid') {
+                // Doctor has examined and bill is unpaid -> show Tagihan card
+                $mode = 'after';
+            } elseif (in_array($booking->status, ['confirmed', 'in_progress']) && $booking->payment_status === 'unpaid') {
+                // Booking created and waiting for doctor examination -> show Upcoming card (Gambar 3)
+                $mode = 'before';
+            } else {
+                $mode = 'welcome';
+            }
+        }
+
+        return [
+            'booking' => $booking,
+            'mode' => $mode,
+            'doctor_examined' => $doctorExamined,
+        ];
+    }
+
+    /**
+     * Get real-time appointment and examination status (for automatic client trigger).
+     */
+    public function getAppointmentStatus(): JsonResponse
+    {
+        $appointmentData = $this->resolveAppointmentState();
+        $latestBooking = $appointmentData['booking'];
+
+        return response()->json([
+            'success' => true,
+            'mode' => $appointmentData['mode'],
+            'doctor_examined' => $appointmentData['doctor_examined'],
+            'status' => $latestBooking?->status ?? 'confirmed',
+            'booking_id' => $latestBooking?->id,
+            'booking_code' => $latestBooking?->booking_code ?? '#BILL00124',
+            'doctor_name' => $latestBooking?->doctor?->nama_dokter ?? 'Dr. Saran Mitchell',
+            'specialty' => $latestBooking?->doctor?->spesialisasi ?? 'Orthopedist',
+            'image' => $latestBooking?->doctor?->image ?? 'images/doctors/doctor-3.png',
+            'total_amount' => (float) ($latestBooking?->total_amount ?? 435.00),
+            'payment_status' => $latestBooking?->payment_status ?? 'unpaid',
+            'tariff_plan' => $latestBooking?->tariff_plan ?? 'with_medicine',
+        ]);
+    }
+
+    /**
+     * Process patient payment and save to database.
+     */
+    public function processPayment(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'booking_id' => ['nullable', 'integer'],
+            'invoice_number' => ['nullable', 'string'],
+            'tariff_plan' => ['nullable', 'string'],
+            'payment_method' => ['nullable', 'string'],
+            'amount' => ['nullable', 'numeric'],
+            'notes' => ['nullable', 'string'],
+        ]);
+
+        $booking = null;
+        if (! empty($validated['booking_id']) && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])->find($validated['booking_id']);
+        }
+
+        if (! $booking && ! empty($validated['invoice_number']) && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])->where('booking_code', $validated['invoice_number'])->first();
+        }
+
+        if (! $booking && session('last_examined_booking_id') && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])->find(session('last_examined_booking_id'));
+        }
+
+        if (! $booking && session('current_booking_id') && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])->find(session('current_booking_id'));
+        }
+
+        if (! $booking && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])
+                ->where('status', 'completed')
+                ->where('payment_status', 'unpaid')
+                ->latest('id')
+                ->first();
+        }
+
+        if (! $booking && Schema::hasTable('bookings')) {
+            $booking = Booking::with(['patient', 'doctor'])->latest('id')->first();
+        }
+
+        $amount = (float) ($validated['amount'] ?? ($booking?->total_amount ?? 435.00));
+        $tariffPlan = $validated['tariff_plan'] ?? ($booking?->tariff_plan ?? 'with_medicine');
+        $paymentMethod = $validated['payment_method'] ?? 'cash';
+        $invoiceNumber = $validated['invoice_number'] ?? ($booking?->booking_code ?? '#BILL00124');
+
+        $payment = null;
+        if (Schema::hasTable('payments')) {
+            $payment = Payment::create([
+                'booking_id' => $booking?->id,
+                'patient_id' => $booking?->patient_id,
+                'doctor_id' => $booking?->doctor_id,
+                'invoice_number' => $invoiceNumber,
+                'patient_name' => $booking?->patient?->full_name ?? auth()->user()?->name ?? 'Rina Anggraini',
+                'doctor_name' => $booking?->doctor?->nama_dokter ?? 'Dr. Saran Mitchell',
+                'service_type' => $booking?->doctor?->spesialisasi ?? 'Orthopedics',
+                'payment_method' => $paymentMethod,
+                'tariff_plan' => $tariffPlan,
+                'amount' => $amount,
+                'tax_amount' => 0,
+                'discount_amount' => 0,
+                'net_amount' => $amount,
+                'status' => 'confirmed',
+                'notes' => $validated['notes'] ?? 'Pembayaran tagihan via portal pasien',
+                'paid_at' => now(),
+            ]);
+        }
+
+        if ($booking) {
+            $booking->update([
+                'payment_status' => 'paid',
+                'status' => 'completed',
+                'total_amount' => $amount,
+                'tariff_plan' => $tariffPlan,
+            ]);
+        }
+
+        session(['just_paid_booking_id' => $booking?->id ?? 1]);
+        session()->forget('last_examined_booking_id');
+        session()->forget('current_booking_id');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil disimpan ke database!',
+            'payment' => $payment,
+            'invoice_number' => $invoiceNumber,
+            'amount' => $amount,
+            'mode' => 'welcome',
+        ]);
+    }
+
+    /**
+     * Store a newly created consultation booking in database.
+     */
+    public function storeBooking(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'patient_name' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'symptoms' => ['required', 'string'],
+            'duration' => ['nullable', 'string'],
+            'severity' => ['nullable', 'string'],
+            'notes' => ['nullable', 'string'],
+            'doctor_id' => ['nullable', 'integer'],
+            'booking_date' => ['nullable', 'string'],
+            'booking_time' => ['nullable', 'string'],
+        ]);
+
+        $doctor = null;
+        if (Schema::hasTable('doctors')) {
+            $doctor = isset($validated['doctor_id'])
+                ? Doctor::find($validated['doctor_id'])
+                : Doctor::first();
+
+            if (! $doctor) {
+                $doctor = Doctor::first();
+            }
+        }
+
+        // Find or create patient record
+        $patient = null;
+        if (Schema::hasTable('patients')) {
+            $patient = Patient::firstOrCreate(
+                ['phone' => $validated['phone']],
+                [
+                    'mrn' => '#GM-'.fake()->unique()->numerify('####'),
+                    'full_name' => $validated['patient_name'],
+                    'user_id' => auth()->id(),
+                ]
+            );
+        }
+
+        $bookingCode = 'BK-'.now()->format('Ymd').'-'.strtoupper(substr(uniqid(), -4));
+
+        $booking = null;
+        if (Schema::hasTable('bookings') && $patient) {
+            $booking = Booking::create([
+                'booking_code' => $bookingCode,
+                'patient_id' => $patient->id,
+                'doctor_id' => $doctor ? $doctor->id : 1,
+                'booking_date' => now()->toDateString(),
+                'booking_time' => $validated['booking_time'] ?? '09:00 AM',
+                'booking_source' => 'online',
+                'symptoms' => $validated['symptoms'],
+                'duration' => $validated['duration'] ?? '1 - 3 Hari',
+                'severity' => $validated['severity'] ?? 'Sedang',
+                'notes' => $validated['notes'] ?? null,
+                'status' => 'confirmed',
+                'tariff_plan' => 'with_medicine',
+                'total_amount' => 435.00,
+                'payment_status' => 'unpaid',
+            ]);
+        }
+
+        $queue = null;
+        if (Schema::hasTable('queues') && $booking) {
+            $prefix = match ($doctor?->id) {
+                1 => 'B', 2 => 'A', 3 => 'C', default => 'A'
+            };
+            $queueCount = Queue::whereDate('queue_date', now()->toDateString())->count();
+            $queueNumber = $prefix.'-'.str_pad((string) ($queueCount + 1), 2, '0', STR_PAD_LEFT);
+
+            $queue = Queue::create([
+                'booking_id' => $booking->id,
+                'queue_number' => $queueNumber,
+                'queue_date' => now()->toDateString(),
+                'time_slot' => $validated['booking_time'] ?? '09:00 AM',
+                'status' => 'waiting',
+            ]);
+
+            session(['current_booking_id' => $booking->id]);
+            session()->forget('last_examined_booking_id');
+            session()->forget('just_paid_booking_id');
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pendaftaran Berhasil! Sesi dengan '.($doctor?->nama_dokter ?? 'Dokter').' telah dijadwalkan.',
+            'booking' => $booking,
+            'queue' => $queue,
         ]);
     }
 
