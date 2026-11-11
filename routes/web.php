@@ -38,4 +38,5 @@ Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function ()
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
     Route::get('/calendar', [AdminController::class, 'calendar'])->name('calendar');
     Route::get('/export-csv', [AdminController::class, 'exportCsv'])->name('exportCsv');
+    Route::post('/transaction', [AdminController::class, 'storeTransaction'])->name('storeTransaction');
 });

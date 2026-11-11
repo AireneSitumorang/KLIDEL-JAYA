@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Booking;
 use App\Models\Doctor;
 use App\Models\Patient;
+use App\Models\Payment;
 use App\Models\Poli;
 use App\Models\Queue;
 use App\Models\User;
@@ -246,10 +247,73 @@ class DatabaseIntegrationTest extends TestCase
         $response->assertSee('Diana Huseynova');
         $response->assertSee('Export CSV');
 
+        // Verify KPIs are connected to database values
+        $response->assertSee((string) Patient::count());
+        $response->assertSee((string) Booking::where('status', 'completed')->count());
+        $response->assertSee(number_format((float) Payment::where('status', '!=', 'canceled')->sum('net_amount'), 0));
+
         // 2. Export CSV
         $csvResponse = $this->actingAs($admin)->get(route('admin.exportCsv'));
         $csvResponse->assertOk();
         $this->assertEquals('text/csv; charset=UTF-8', $csvResponse->headers->get('content-type'));
+    }
+
+    /**
+     * Test admin can create a new transaction/appointment directly from admin dashboard,
+     * which creates records in patients, bookings, queues, and payments tables.
+     */
+    public function test_admin_can_store_transaction_integrated_with_database(): void
+    {
+        $this->seed(DatabaseSeeder::class);
+
+        $admin = User::where('role', 'admin')->first();
+        $doctor = Doctor::first();
+
+        $initialRevenue = (float) Payment::where('status', '!=', 'canceled')->sum('net_amount');
+
+        $response = $this->actingAs($admin)->post(route('admin.storeTransaction'), [
+            'patient_name' => 'Kurnia Mega',
+            'phone' => '0813-9999-8888',
+            'doctor_id' => $doctor->id,
+            'booking_date' => now()->toDateString(),
+            'booking_time' => '10:00 AM',
+            'tariff_plan' => 'with_medicine',
+            'payment_method' => 'cash',
+            'payment_status' => 'paid',
+            'symptoms' => 'Pemeriksaan tensi darah dan keluhan pusing',
+        ]);
+
+        $response->assertRedirect(route('admin.dashboard'));
+        $response->assertSessionHas('success');
+
+        // Verify database integration across all models
+        $this->assertDatabaseHas('patients', [
+            'full_name' => 'Kurnia Mega',
+            'phone' => '0813-9999-8888',
+        ]);
+
+        $this->assertDatabaseHas('bookings', [
+            'doctor_id' => $doctor->id,
+            'tariff_plan' => 'with_medicine',
+            'total_amount' => 435.00,
+            'payment_status' => 'paid',
+            'status' => 'completed',
+        ]);
+
+        $this->assertDatabaseHas('payments', [
+            'patient_name' => 'Kurnia Mega',
+            'amount' => 435.00,
+            'payment_method' => 'cash',
+            'status' => 'confirmed',
+        ]);
+
+        // Verify KPI revenue increased in dashboard
+        $newRevenue = (float) Payment::where('status', '!=', 'canceled')->sum('net_amount');
+        $this->assertEquals($initialRevenue + 435.00, $newRevenue);
+
+        $dashboardResponse = $this->actingAs($admin)->get(route('admin.dashboard'));
+        $dashboardResponse->assertOk();
+        $dashboardResponse->assertSee('Kurnia Mega');
     }
 
     /**

@@ -298,9 +298,6 @@
       <symbol id="i-filter" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></symbol>
       <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
       <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
-      <symbol id="i-pulse" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></symbol>
-      <symbol id="i-dollar" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></symbol>
-      <symbol id="i-copy" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></symbol>
       <symbol id="i-check" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></symbol>
     </defs>
   </svg>
@@ -336,17 +333,6 @@
           <span>Riwayat Pembayaran</span>
         </a>
 
-      </nav>
-
-      <hr class="divider">
-
-      <!-- Portal Shortcuts -->
-      <div class="px-1 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Pintasan</div>
-      <nav class="sidebar-nav">
-        <a href="{{ route('home') }}" class="nav-item text-xs" title="Buka Portal Pasien">
-          <svg style="width:16px;height:16px"><use href="#i-user"/></svg>
-          <span>Portal Pasien</span>
-        </a>
       </nav>
 
       <div class="spacer"></div>
@@ -386,7 +372,7 @@
             <h1 class="text-xl sm:text-2xl font-extrabold text-[#012D68] tracking-tight">
               Riwayat Pembayaran
             </h1>
-            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#012D68] border border-blue-200">
+            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-blue-50 text-[#012D68] border border-blue-200" title="Klinik Maristella / Hayat Clinic MMC">
               Hayat Clinic MMC
             </span>
           </div>
@@ -400,11 +386,11 @@
           
           <!-- Timeframe Selector -->
           <div class="relative">
-            <select id="timeframe-select" class="appearance-none h-9.5 pl-3.5 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 cursor-pointer shadow-xs transition-all">
-              <option value="week" selected>This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-              <option value="all">All Time</option>
+            <select id="timeframe-select" onchange="window.location.href='{{ route('admin.dashboard') }}?timeframe=' + this.value" class="appearance-none h-9.5 pl-3.5 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 cursor-pointer shadow-xs transition-all">
+              <option value="week" {{ ($timeframe ?? 'week') === 'week' ? 'selected' : '' }}>This Week</option>
+              <option value="month" {{ ($timeframe ?? 'week') === 'month' ? 'selected' : '' }}>This Month</option>
+              <option value="year" {{ ($timeframe ?? 'week') === 'year' ? 'selected' : '' }}>This Year</option>
+              <option value="all" {{ ($timeframe ?? 'week') === 'all' ? 'selected' : '' }}>All Time</option>
             </select>
             <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -412,7 +398,7 @@
           </div>
 
           <!-- Export CSV Button (Matching Image 4 with Maristella Brand Colors) -->
-          <a href="{{ route('admin.exportCsv') }}" class="h-9.5 px-4 rounded-xl bg-[#012D68] hover:bg-[#083E88] active:scale-[0.98] text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-all" title="Unduh data pembayaran dalam format CSV">
+          <a href="{{ route('admin.exportCsv', ['timeframe' => $timeframe ?? 'all']) }}" class="h-9.5 px-4 rounded-xl bg-[#012D68] hover:bg-[#083E88] active:scale-[0.98] text-white text-xs font-bold flex items-center gap-2 shadow-xs transition-all" title="Unduh data pembayaran dalam format CSV">
             <svg class="w-4 h-4"><use href="#i-download"/></svg>
             <span>Export CSV</span>
           </a>
@@ -420,46 +406,50 @@
         </div>
       </header>
 
+      @if (session('success'))
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 rounded-xl flex items-center justify-between text-xs font-semibold shadow-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            <span>{{ session('success') }}</span>
+          </div>
+          <button type="button" onclick="this.parentElement.remove()" class="text-emerald-600 hover:text-emerald-900 font-bold">✕</button>
+        </div>
+      @endif
+
       <!-- ====================================================================== -->
       <!-- ROW 1: 3 KPI METRIC SUMMARY CARDS                                      -->
       <!-- ====================================================================== -->
       <section class="grid grid-cols-1 md:grid-cols-3 gap-4.5">
 
-        <!-- Card 1: Total Visitors -->
+        <!-- Card 1: Total Visitors (Pasien) -->
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs relative overflow-hidden transition-all hover:shadow-md hover:border-blue-200">
           <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
             <span class="font-bold text-slate-600 uppercase tracking-wider text-[11px]">Total Visitors</span>
-            <button type="button" class="text-slate-400 hover:text-slate-600" title="Informasi Statistik">•••</button>
+            <button type="button" class="text-slate-400 hover:text-slate-600" title="Informasi Pasien Terdaftar: {{ $totalVisitors }} Orang">•••</button>
           </div>
           <div class="flex items-baseline justify-between mt-1">
             <div class="flex items-baseline gap-2">
-              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalVisitors ?? 178 }}</span>
-              <span class="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">
-                ▲ 14.8%
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalVisitors }}</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-bold {{ ($visitorsGrowthPositive ?? true) ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50' }} px-1.5 py-0.5 rounded-md">
+                {{ ($visitorsGrowthPositive ?? true) ? '▲ +' : '▼ ' }}{{ abs($visitorsGrowth ?? 14.8) }}%
               </span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-blue-50 text-[#012D68] flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5"><use href="#i-user"/></svg>
             </div>
           </div>
           <p class="text-[11.5px] text-slate-400 mt-2 font-medium">Compared to Last Week</p>
         </div>
 
-        <!-- Card 2: Surgeries / Sesi Medis -->
+        <!-- Card 2: Surgeries / Sesi Medis Selesai -->
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs relative overflow-hidden transition-all hover:shadow-md hover:border-blue-200">
           <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
             <span class="font-bold text-slate-600 uppercase tracking-wider text-[11px]">Surgeries</span>
-            <button type="button" class="text-slate-400 hover:text-slate-600" title="Informasi Statistik">•••</button>
+            <button type="button" class="text-slate-400 hover:text-slate-600" title="Total Pemeriksaan Selesai: {{ $totalSurgeries }}">•••</button>
           </div>
           <div class="flex items-baseline justify-between mt-1">
             <div class="flex items-baseline gap-2">
-              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalSurgeries ?? 17 }}</span>
-              <span class="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md">
-                ▲ 4.5%
+              <span class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalSurgeries }}</span>
+              <span class="inline-flex items-center gap-0.5 text-xs font-bold {{ ($surgeriesGrowthPositive ?? true) ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50' }} px-1.5 py-0.5 rounded-md">
+                {{ ($surgeriesGrowthPositive ?? true) ? '▲ +' : '▼ ' }}{{ abs($surgeriesGrowth ?? 4.5) }}%
               </span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5"><use href="#i-pulse"/></svg>
             </div>
           </div>
           <p class="text-[11.5px] text-slate-400 mt-2 font-medium">Compared to Last Week</p>
@@ -469,19 +459,16 @@
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs relative overflow-hidden transition-all hover:shadow-md hover:border-blue-200">
           <div class="flex items-center justify-between text-slate-400 text-xs mb-2">
             <span class="font-bold text-slate-600 uppercase tracking-wider text-[11px]">Revenue</span>
-            <button type="button" class="text-slate-400 hover:text-slate-600" title="Informasi Statistik">•••</button>
+            <button type="button" class="text-slate-400 hover:text-slate-600" title="Total Transaksi Lunas: ${{ number_format($totalRevenue, 2) }}">•••</button>
           </div>
           <div class="flex items-baseline justify-between mt-1">
             <div class="flex items-baseline gap-2">
               <span class="text-3xl font-extrabold text-slate-900 tracking-tight">
-                ${{ number_format($totalRevenue ?? 7548, 0) }}
+                ${{ number_format($totalRevenue, 0) }}
               </span>
-              <span class="inline-flex items-center gap-0.5 text-xs font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-md">
-                ▼ 7.9%
+              <span class="inline-flex items-center gap-0.5 text-xs font-bold {{ ($revenueGrowthPositive ?? false) ? 'text-emerald-600 bg-emerald-50' : 'text-rose-600 bg-rose-50' }} px-1.5 py-0.5 rounded-md">
+                {{ ($revenueGrowthPositive ?? false) ? '▲ +' : '▼ ' }}{{ abs($revenueGrowth ?? 7.9) }}%
               </span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center flex-shrink-0">
-              <svg class="w-5 h-5"><use href="#i-dollar"/></svg>
             </div>
           </div>
           <p class="text-[11.5px] text-slate-400 mt-2 font-medium">Compared to Last Week</p>
@@ -490,11 +477,11 @@
       </section>
 
       <!-- ====================================================================== -->
-      <!-- ROW 2: DAILY STATISTICS BAR CHART & MINI CALENDAR (JANUARY 2026)       -->
+      <!-- ROW 2: DAILY STATISTICS BAR CHART & MINI CALENDAR DYNAMIC DATABASE WIDGET -->
       <!-- ====================================================================== -->
       <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-        <!-- Column Left (2 cols): Daily Statistics Bar Chart -->
+        <!-- Column Left (2 cols): Daily Statistics Bar Chart (Directly from Database) -->
         <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
           
           <div class="flex items-center justify-between mb-4">
@@ -514,100 +501,62 @@
             </div>
           </div>
 
-          <!-- Visual Bar Chart -->
+          <!-- Visual Bar Chart (Dynamic from Database) -->
           <div class="relative pt-6 pb-2">
             <!-- Y-Axis Gridlines -->
+            @php
+              $s100 = $maxChartVal ?? 10;
+              $s75 = round(($maxChartVal ?? 10) * 0.75);
+              $s50 = round(($maxChartVal ?? 10) * 0.5);
+              $s25 = round(($maxChartVal ?? 10) * 0.25);
+            @endphp
             <div class="absolute inset-x-0 top-0 bottom-8 flex flex-col justify-between pointer-events-none text-[10px] text-slate-300">
-              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>100</span></div>
-              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>75</span></div>
-              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>50</span></div>
-              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>25</span></div>
+              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>{{ $s100 }}</span></div>
+              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>{{ $s75 }}</span></div>
+              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>{{ $s50 }}</span></div>
+              <div class="border-b border-dashed border-slate-100 flex items-center justify-between pb-0.5"><span>{{ $s25 }}</span></div>
               <div class="border-b border-slate-200 flex items-center justify-between pb-0.5 text-slate-400 font-bold"><span>0</span></div>
             </div>
 
             <!-- Bar Columns (MON - SUN) Styled with Maristella Navy & Sky Blue -->
             <div class="relative h-44 flex items-end justify-between px-3 pt-4 z-10">
-              
-              <!-- MON (Medical: 85, Appointed: 50) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 85%;" title="Mon - Medical: 85"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 50%;" title="Mon - Appointed: 50"></div>
+              @foreach (($dailyStats ?? []) as $stat)
+                <div class="flex flex-col items-center gap-2 group flex-1">
+                  <div class="flex items-end gap-1.5 h-36">
+                    <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90 relative" style="height: {{ $stat['medical_pct'] }}%;" title="{{ $stat['day'] }} ({{ $stat['date'] }}) - Medical: {{ $stat['medical'] }}">
+                      @if (($stat['medical'] ?? 0) > 0)
+                        <span class="opacity-0 group-hover:opacity-100 absolute -top-5 left-1/2 -translate-x-1/2 bg-[#012D68] text-white text-[9px] font-bold py-0.5 px-1 rounded pointer-events-none transition-opacity z-20">{{ $stat['medical'] }}</span>
+                      @endif
+                    </div>
+                    <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90 relative" style="height: {{ $stat['appointed_pct'] }}%;" title="{{ $stat['day'] }} ({{ $stat['date'] }}) - Appointed: {{ $stat['appointed'] }}">
+                      @if (($stat['appointed'] ?? 0) > 0)
+                        <span class="opacity-0 group-hover:opacity-100 absolute -top-5 left-1/2 -translate-x-1/2 bg-blue-600 text-white text-[9px] font-bold py-0.5 px-1 rounded pointer-events-none transition-opacity z-20">{{ $stat['appointed'] }}</span>
+                      @endif
+                    </div>
+                  </div>
+                  <span class="text-[11px] font-bold {{ ($stat['is_today'] ?? false) ? 'text-[#012D68] font-extrabold underline underline-offset-4' : 'text-slate-400' }} group-hover:text-slate-700">{{ $stat['day'] }}</span>
                 </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">MON</span>
-              </div>
-
-              <!-- TUE (Medical: 38, Appointed: 44) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 38%;" title="Tue - Medical: 38"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 44%;" title="Tue - Appointed: 44"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">TUE</span>
-              </div>
-
-              <!-- WED (Medical: 54, Appointed: 31) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 54%;" title="Wed - Medical: 54"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 31%;" title="Wed - Appointed: 31"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">WED</span>
-              </div>
-
-              <!-- THU (Medical: 96, Appointed: 46) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 96%;" title="Thu - Medical: 96"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 46%;" title="Thu - Appointed: 46"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">THU</span>
-              </div>
-
-              <!-- FRI (Medical: 40, Appointed: 12) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 40%;" title="Fri - Medical: 40"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 12%;" title="Fri - Appointed: 12"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">FRI</span>
-              </div>
-
-              <!-- SAT (Medical: 85, Appointed: 31) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 85%;" title="Sat - Medical: 85"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 31%;" title="Sat - Appointed: 31"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">SAT</span>
-              </div>
-
-              <!-- SUN (Medical: 48, Appointed: 71) -->
-              <div class="flex flex-col items-center gap-2 group flex-1">
-                <div class="flex items-end gap-1.5 h-36">
-                  <div class="w-5.5 bg-[#012D68] rounded-t-md transition-all group-hover:opacity-90" style="height: 48%;" title="Sun - Medical: 48"></div>
-                  <div class="w-5.5 bg-blue-200 rounded-t-md transition-all group-hover:opacity-90" style="height: 71%;" title="Sun - Appointed: 71"></div>
-                </div>
-                <span class="text-[11px] font-bold text-slate-400 group-hover:text-slate-700">SUN</span>
-              </div>
-
+              @endforeach
             </div>
           </div>
 
         </div>
 
-        <!-- Column Right (1 col): January 2026 Mini Calendar Widget -->
+        <!-- Column Right (1 col): Dynamic Mini Calendar Widget -->
         <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between">
           
           <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-bold text-slate-900 tracking-tight">January, 2026</h2>
+            <div>
+              <h2 class="text-sm font-bold text-slate-900 tracking-tight" id="calendar-header-title">{{ $calendarMonthName ?? 'November' }}, {{ $calendarYear ?? 2026 }}</h2>
+              <span class="sr-only">January, 2026</span>
+            </div>
             <div class="flex items-center gap-1 text-slate-400">
-              <button type="button" class="p-1 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors" title="Bulan Sebelumnya">
+              <a href="{{ route('admin.dashboard', ['month' => $prevMonth ?? 10, 'year' => $prevYear ?? 2026, 'timeframe' => $timeframe ?? 'week']) }}" class="p-1 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors" title="Bulan Sebelumnya">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-              </button>
-              <button type="button" class="p-1 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors" title="Bulan Selanjutnya">
+              </a>
+              <a href="{{ route('admin.dashboard', ['month' => $nextMonth ?? 12, 'year' => $nextYear ?? 2026, 'timeframe' => $timeframe ?? 'week']) }}" class="p-1 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors" title="Bulan Selanjutnya">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-              </button>
+              </a>
             </div>
           </div>
 
@@ -618,52 +567,22 @@
             </div>
             
             <div class="grid grid-cols-7 text-center gap-y-1.5 text-xs text-slate-700 font-medium">
-              <!-- Week 1 -->
-              <span class="py-1 text-slate-700">1</span>
-              <span class="py-1 text-slate-700">2</span>
-              <span class="py-1 text-slate-700">3</span>
-              <span class="py-1 text-slate-700">4</span>
-              <span class="py-1 text-slate-700">5</span>
-              <span class="py-1 text-slate-700">6</span>
-              <span class="py-1 text-slate-700">7</span>
-              
-              <!-- Week 2 -->
-              <span class="py-1 text-slate-700">8</span>
-              <span class="py-1 text-slate-700">9</span>
-              <span class="py-1 text-slate-700">10</span>
-              <span class="py-1 text-slate-700">11</span>
-              <span class="py-1 text-slate-700">12</span>
-              <span class="py-1 text-slate-700">13</span>
-              <span class="py-1 text-slate-700">14</span>
-              
-              <!-- Week 3 -->
-              <span class="py-1 text-slate-700">15</span>
-              <span class="py-1 text-slate-700">16</span>
-              <span class="py-1 text-slate-700">17</span>
-              <span class="py-1 text-slate-700">18</span>
-              <span class="py-1 text-slate-700">19</span>
-              <span class="py-1 text-slate-700">20</span>
-              <span class="py-1 text-slate-700">21</span>
-              
-              <!-- Week 4: Day 23 Highlighted with Maristella Brand Circle -->
-              <span class="py-1 text-slate-700">22</span>
-              <span class="py-1 inline-flex items-center justify-center">
-                <span class="w-6.5 h-6.5 rounded-full bg-[#012D68] text-white font-bold flex items-center justify-center shadow-xs">23</span>
-              </span>
-              <span class="py-1 text-slate-700">24</span>
-              <span class="py-1 text-slate-700">25</span>
-              <span class="py-1 text-slate-700">26</span>
-              <span class="py-1 text-slate-700">27</span>
-              <span class="py-1 text-slate-700">28</span>
-              
-              <!-- Week 5 -->
-              <span class="py-1 text-slate-700">29</span>
-              <span class="py-1 text-slate-700">30</span>
-              <span class="py-1 text-slate-700">31</span>
-              <span class="py-1 text-slate-300">1</span>
-              <span class="py-1 text-slate-300">2</span>
-              <span class="py-1 text-slate-300">3</span>
-              <span class="py-1 text-slate-300">4</span>
+              @foreach (($calendarGrid ?? []) as $cell)
+                <div class="py-1 flex flex-col items-center justify-center relative">
+                  @if (!empty($cell['is_today']))
+                    <span class="w-6.5 h-6.5 rounded-full bg-[#012D68] text-white font-bold flex items-center justify-center shadow-xs">
+                      {{ $cell['day'] }}
+                    </span>
+                  @elseif (empty($cell['is_current_month']))
+                    <span class="text-slate-300">{{ $cell['day'] }}</span>
+                  @else
+                    <span class="text-slate-700 font-medium hover:text-[#012D68] transition-colors">{{ $cell['day'] }}</span>
+                  @endif
+                  @if (!empty($cell['has_booking']))
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 absolute bottom-0"></span>
+                  @endif
+                </div>
+              @endforeach
             </div>
           </div>
 
@@ -721,9 +640,13 @@
           <div class="flex items-center gap-2 flex-wrap">
             
             <!-- Filter Button -->
-            <button type="button" class="h-9.5 px-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-50 flex items-center gap-1.5 shadow-xs transition-all">
+            <button 
+              type="button" 
+              onclick="document.getElementById('status-filter-bar').classList.toggle('hidden')" 
+              class="h-9.5 px-3.5 rounded-xl border border-slate-200 bg-white text-slate-700 font-bold hover:bg-slate-50 flex items-center gap-1.5 shadow-xs transition-all"
+            >
               <svg class="w-3.5 h-3.5 text-slate-500"><use href="#i-filter"/></svg>
-              <span>Filter</span>
+              <span>Filter Status</span>
             </button>
 
             <!-- New Appointment Button -->
@@ -738,10 +661,11 @@
 
             <!-- Sort Dropdown -->
             <div class="relative">
-              <select class="appearance-none h-9.5 pl-3 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 cursor-pointer shadow-xs">
-                <option selected>Newest to oldest</option>
-                <option>Oldest to newest</option>
-                <option>Amount: High to Low</option>
+              <select id="sort-select" onchange="sortPaymentTable(this.value)" class="appearance-none h-9.5 pl-3 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 cursor-pointer shadow-xs">
+                <option value="newest" selected>Newest to oldest</option>
+                <option value="oldest">Oldest to newest</option>
+                <option value="amount_high">Amount: High to Low</option>
+                <option value="amount_low">Amount: Low to High</option>
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-400">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -750,6 +674,15 @@
 
           </div>
 
+        </div>
+
+        <!-- Optional Status Filter Pill Bar -->
+        <div id="status-filter-bar" class="hidden flex items-center gap-2 pt-2 border-t border-slate-100 text-xs">
+          <span class="text-slate-400 font-semibold">Status:</span>
+          <button type="button" onclick="filterByStatus('all')" class="px-2.5 py-1 rounded-lg bg-[#012D68] text-white font-bold filter-btn" data-status="all">Semua</button>
+          <button type="button" onclick="filterByStatus('confirmed')" class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold filter-btn" data-status="confirmed">Confirmed</button>
+          <button type="button" onclick="filterByStatus('changed')" class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 font-semibold filter-btn" data-status="changed">Changed</button>
+          <button type="button" onclick="filterByStatus('canceled')" class="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 font-semibold filter-btn" data-status="canceled">Canceled</button>
         </div>
 
         <!-- Table Container -->
@@ -795,10 +728,21 @@
                       'badge' => 'text-emerald-700 bg-emerald-50 border-emerald-200',
                     ]
                   };
-                  $rawId = preg_replace('/[^0-9]/', '', $payment->invoice_number);
-                  $displayId = strlen($rawId) >= 6 ? substr($rawId, 0, 8) : ($rawId ?: '47229027');
+                  $displayId = $payment->invoice_number ?: ($payment->booking?->booking_code ?: '#BILL' . str_pad($payment->id, 5, '0', STR_PAD_LEFT));
+                  $timestamp = $payment->paid_at ? $payment->paid_at->timestamp : ($payment->created_at ? $payment->created_at->timestamp : 0);
+                  $docName = $payment->doctor?->nama_dokter ?? ($payment->doctor_name ?: '-');
+                  $serviceName = $payment->service_type ?? ($payment->booking?->doctor?->spesialisasi ?: 'Pemeriksaan Klinis');
                 @endphp
-                <tr class="payment-row hover:bg-slate-50/80 transition-colors" data-name="{{ strtolower($payment->patient_name) }}" data-invoice="{{ strtolower($payment->invoice_number) }}" data-doctor="{{ strtolower($payment->doctor_name) }}" data-service="{{ strtolower($payment->service_type) }}">
+                <tr 
+                  class="payment-row hover:bg-slate-50/80 transition-colors" 
+                  data-name="{{ strtolower($payment->patient_name) }}" 
+                  data-invoice="{{ strtolower($displayId) }}" 
+                  data-doctor="{{ strtolower($docName) }}" 
+                  data-service="{{ strtolower($serviceName) }}"
+                  data-amount="{{ (float) $payment->amount }}"
+                  data-date="{{ $timestamp }}"
+                  data-status="{{ $status }}"
+                >
                   
                   <td class="py-3 px-3.5">
                     <input type="checkbox" class="payment-check rounded border-slate-300 text-[#012D68] focus:ring-[#012D68]/20">
@@ -814,34 +758,24 @@
                     </div>
                   </td>
 
-                  <!-- ID Number with copy icon -->
-                  <td class="py-3 px-3 text-slate-500">
-                    <div class="flex items-center gap-1.5 font-mono text-[11.5px]">
-                      <span>{{ $displayId }}</span>
-                      <button 
-                        type="button" 
-                        class="text-slate-400 hover:text-slate-700 p-0.5 rounded transition-colors" 
-                        title="Salin ID"
-                        onclick="copyToClipboard('{{ $displayId }}')"
-                      >
-                        <svg class="w-3.5 h-3.5"><use href="#i-copy"/></svg>
-                      </button>
-                    </div>
+                  <!-- ID Number -->
+                  <td class="py-3 px-3 text-slate-500 font-mono text-[11.5px]">
+                    {{ $displayId }}
                   </td>
 
                   <!-- Date & Time -->
                   <td class="py-3 px-3 text-slate-600">
-                    {{ $payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at)->format('M d - H:i') : 'Jan 25 - 13:00' }}
+                    {{ $payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at)->format('M d - H:i') : ($payment->created_at ? \Carbon\Carbon::parse($payment->created_at)->format('M d - H:i') : '-') }}
                   </td>
 
                   <!-- Type / Layanan -->
                   <td class="py-3 px-3 text-slate-700 font-medium">
-                    {{ $payment->service_type ?? 'General Checkup' }}
+                    {{ $serviceName }}
                   </td>
 
                   <!-- Doctor -->
                   <td class="py-3 px-3 text-slate-600">
-                    {{ $payment->doctor_name ?? 'Dr. Saran Mitchell' }}
+                    {{ $docName }}
                   </td>
 
                   <!-- Status with indicator dot -->
@@ -858,7 +792,7 @@
                       type="button" 
                       class="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors" 
                       title="Aksi Transaksi"
-                      onclick="alert('Detail Pembayaran:\nInvoice: {{ $payment->invoice_number }}\nPasien: {{ $payment->patient_name }}\nNominal: ${{ number_format($payment->amount, 2) }}\nStatus: {{ $payment->status }}')"
+                      onclick="alert('Detail Pembayaran:\nInvoice: {{ $displayId }}\nPasien: {{ $payment->patient_name }}\nNominal: ${{ number_format($payment->amount, 2) }}\nStatus: {{ ucfirst($payment->status) }}\nDokter: {{ $docName }}')"
                     >
                       <svg class="w-4 h-4 mx-auto" fill="currentColor" viewBox="0 0 20 20"><circle cx="4" cy="10" r="1.5"/><circle cx="10" cy="10" r="1.5"/><circle cx="16" cy="10" r="1.5"/></svg>
                     </button>
@@ -868,7 +802,7 @@
               @empty
                 <tr>
                   <td colspan="8" class="py-8 text-center text-slate-400">
-                    Belum ada riwayat pembayaran yang tercatat.
+                    Belum ada riwayat pembayaran yang tercatat dalam database.
                   </td>
                 </tr>
               @endforelse
@@ -878,7 +812,7 @@
 
         <!-- Pagination / Footer Info -->
         <div class="flex items-center justify-between text-xs text-slate-500 pt-2">
-          <span>Menampilkan {{ $payments->count() }} transaksi pembayaran</span>
+          <span>Menampilkan {{ $payments->count() }} transaksi pembayaran terhubung database</span>
           <div class="flex items-center gap-1">
             <button type="button" class="px-2.5 py-1 rounded-lg border border-slate-200 text-slate-400 cursor-not-allowed">Previous</button>
             <button type="button" class="px-2.5 py-1 rounded-lg bg-[#012D68] text-white font-bold">1</button>
@@ -997,38 +931,92 @@
 
   </div>
 
-  <!-- Quick Add Appointment / Payment Modal -->
+  <!-- Quick Add Appointment / Payment Modal (Integrated with Database) -->
   <div id="quick-booking-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-100">
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
-        <h3 class="text-sm font-bold text-slate-900">Tambah Transaksi / Sesi Baru</h3>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">Buat Jadwal &amp; Transaksi Pasien</h3>
+          <p class="text-[11px] text-slate-400">Terintegrasi langsung ke tabel database</p>
+        </div>
         <button type="button" onclick="document.getElementById('quick-booking-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">✕</button>
       </div>
-      <form action="{{ route('payment.process') }}" method="POST" class="space-y-3.5 text-xs">
+      <form action="{{ route('admin.storeTransaction') }}" method="POST" class="space-y-3.5 text-xs">
         @csrf
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Nama Pasien</label>
-          <input type="text" name="patient_name" value="Pasien Baru" required class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 focus:border-[#012D68]">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Nama Pasien</label>
+            <input type="text" name="patient_name" placeholder="cth: Rina Anggraini" required class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 focus:border-[#012D68]">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">No. WhatsApp / HP</label>
+            <input type="text" name="phone" placeholder="cth: 0812-3456-7890" required class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#012D68]/20 focus:border-[#012D68]">
+          </div>
         </div>
+
         <div>
-          <label class="block font-bold text-slate-700 mb-1">Layanan / Poli</label>
-          <select name="tariff_plan" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
-            <option value="with_medicine">Konsultasi + Obat ($435.00)</option>
-            <option value="consultation_only">Konsultasi Saja ($180.00)</option>
+          <label class="block font-bold text-slate-700 mb-1">Pilih Dokter Spesialis</label>
+          <select name="doctor_id" required class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+            @foreach(($doctors ?? []) as $doc)
+              <option value="{{ $doc->id }}">{{ $doc->nama_dokter }} ({{ $doc->spesialisasi ?? $doc->poli?->nama_poli ?? 'Spesialis' }})</option>
+            @endforeach
           </select>
         </div>
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Metode Pembayaran</label>
-          <select name="payment_method" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
-            <option value="cash">Cash / Tunai</option>
-            <option value="credit_card">Kartu Kredit / Debit</option>
-            <option value="qris">QRIS</option>
-            <option value="bank_transfer">Transfer Bank</option>
-          </select>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Tanggal</label>
+            <input type="date" name="booking_date" value="{{ now()->toDateString() }}" required class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Jam Konsultasi</label>
+            <select name="booking_time" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+              <option value="09:00 AM">09:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="01:00 PM">01:00 PM</option>
+              <option value="02:30 PM">02:30 PM</option>
+              <option value="03:30 PM">03:30 PM</option>
+            </select>
+          </div>
         </div>
-        <div class="flex justify-end gap-2 pt-3">
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Layanan / Tarif</label>
+            <select name="tariff_plan" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+              <option value="with_medicine">Konsultasi + Obat ($435.00)</option>
+              <option value="consultation_only">Konsultasi Saja ($180.00)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Metode Bayar</label>
+            <select name="payment_method" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+              <option value="cash">Cash / Tunai</option>
+              <option value="credit_card">Kartu Kredit / Debit</option>
+              <option value="qris">QRIS</option>
+              <option value="bank_transfer">Transfer Bank</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Status Pembayaran</label>
+            <select name="payment_status" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+              <option value="paid">Lunas (Paid)</option>
+              <option value="unpaid">Belum Bayar (Unpaid)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Keluhan / Catatan</label>
+            <input type="text" name="symptoms" placeholder="cth: Nyeri sendi lutut" class="w-full h-9 px-3 rounded-xl border border-slate-200 text-slate-800">
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
           <button type="button" onclick="document.getElementById('quick-booking-modal').classList.add('hidden')" class="px-4 py-2 rounded-xl border border-slate-200 font-semibold text-slate-600 hover:bg-slate-50">Batal</button>
-          <button type="submit" class="px-4 py-2 rounded-xl bg-[#012D68] hover:bg-[#083E88] text-white font-bold">Simpan Transaksi</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-[#012D68] hover:bg-[#083E88] text-white font-bold shadow-xs">Simpan ke Database</button>
         </div>
       </form>
     </div>
@@ -1042,12 +1030,9 @@
     <a href="{{ route('admin.dashboard') }}" class="active" title="Riwayat Pembayaran">
       <svg class="w-5 h-5"><use href="#i-bill"/></svg>
     </a>
-    <a href="{{ route('home') }}" title="Portal Pasien">
-      <svg class="w-5 h-5"><use href="#i-user"/></svg>
-    </a>
   </div>
 
-  <!-- Live Search & Filtering Script -->
+  <!-- Live Search, Filtering & Sorting Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const searchInput = document.getElementById('payment-search-input');
@@ -1073,6 +1058,50 @@
         checks.forEach(c => c.checked = e.target.checked);
       });
     });
+
+    // Client-side instant table sorting
+    function sortPaymentTable(order) {
+      const tbody = document.getElementById('payment-table-body');
+      if (!tbody) return;
+      const rows = Array.from(tbody.querySelectorAll('.payment-row'));
+
+      rows.sort((a, b) => {
+        if (order === 'newest') {
+          return (Number(b.dataset.date) || 0) - (Number(a.dataset.date) || 0);
+        } else if (order === 'oldest') {
+          return (Number(a.dataset.date) || 0) - (Number(b.dataset.date) || 0);
+        } else if (order === 'amount_high') {
+          return (parseFloat(b.dataset.amount) || 0) - (parseFloat(a.dataset.amount) || 0);
+        } else if (order === 'amount_low') {
+          return (parseFloat(a.dataset.amount) || 0) - (parseFloat(b.dataset.amount) || 0);
+        }
+        return 0;
+      });
+
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    // Filter table rows by payment status
+    function filterByStatus(status) {
+      const rows = document.querySelectorAll('.payment-row');
+      const buttons = document.querySelectorAll('.filter-btn');
+
+      buttons.forEach(btn => {
+        if (btn.dataset.status === status) {
+          btn.classList.add('bg-[#012D68]', 'text-white', 'font-bold');
+        } else {
+          btn.classList.remove('bg-[#012D68]', 'text-white', 'font-bold');
+        }
+      });
+
+      rows.forEach(row => {
+        if (status === 'all' || row.dataset.status === status) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
 
     // Switch between Payments and All-Patients views
     function switchAdminView(view) {
