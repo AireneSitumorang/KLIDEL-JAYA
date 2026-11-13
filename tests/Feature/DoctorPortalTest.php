@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Queue;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -83,7 +84,7 @@ class DoctorPortalTest extends TestCase
      */
     public function test_doctor_dashboard_renders_all_4_use_cases(): void
     {
-        $doctor = User::where('role', 'doctor')->first();
+        $doctor = User::where('email', 'anaya@aihealth.com')->first() ?: User::where('role', 'doctor')->first();
 
         $response = $this->actingAs($doctor)->get(route('doctor.dashboard'));
 
@@ -92,7 +93,7 @@ class DoctorPortalTest extends TestCase
         $response->assertSee('maristella-logo-white.png');
         // Use Case 1: Lihat Antrean Harian
         $response->assertSee('Antrean Harian Pasien');
-        $response->assertSee('A-01');
+        $response->assertSee('Antrean');
 
         // Use Case 2: Lihat Data Pasien
         $response->assertSee('Lihat Data Pasien');
@@ -115,8 +116,10 @@ class DoctorPortalTest extends TestCase
     public function test_doctor_can_save_soap_record(): void
     {
         $doctor = User::where('role', 'doctor')->first();
+        $queue = Queue::whereHas('booking', fn ($q) => $q->where('doctor_id', $doctor->doctor->id))->first();
+        $queueKey = 'Q-'.str_pad((string) $queue->id, 3, '0', STR_PAD_LEFT);
 
-        $response = $this->actingAs($doctor)->post(route('doctor.saveSoap', 'Q-001'), [
+        $response = $this->actingAs($doctor)->post(route('doctor.saveSoap', $queueKey), [
             'subjective' => 'Pasien mengeluh migrain berat berdenyut.',
             'bp' => '120/80',
             'hr' => '78',

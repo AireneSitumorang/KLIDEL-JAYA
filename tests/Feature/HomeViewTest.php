@@ -25,5 +25,23 @@ class HomeViewTest extends TestCase
         $response->assertSee('Gejala / Keluhan Utama');
         $response->assertSee('Sudah Berapa Lama Dirasakan?');
         $response->assertSee('Konfirmasi Pemesanan');
+        $response->assertSee('Sebelum Periksa');
+        $response->assertSee('Sesudah Periksa');
+        $response->assertSee('Tagihan Pemeriksaan');
+        $response->assertSee('#BILL00124');
+        $response->assertSee('$435.00');
+        $response->assertSee('Pembayaran Cash');
+        $response->assertSee('Bayar Sekarang');
+        $response->assertSee('Konsultasi + Beli Obat');
+        $response->assertSee('Hanya Konsultasi Dokter Saja');
+        $response->assertSee('$180.00');
+        $response->assertSee('Payment success');
+        $response->assertSee('Payment Details');
+        $response->assertSee('Print Receipt');
+        $response->assertSee('Back to calendar');
+        $response->assertSee('Treatment (2)');
+        $response->assertSee('Component used (1)');
+        $response->assertSee('Medicine (1)');
+        $response->assertSee('Detail Transaction');
     }
 }

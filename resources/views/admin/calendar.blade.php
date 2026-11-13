@@ -1045,6 +1045,7 @@
     <symbol id="i-close" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></symbol>
     <symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M4.5 3v5a4.5 4.5 0 0 0 9 0V3M19 10v2a7 7 0 0 1-14 0v-2M9 19v2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2"/><circle cx="18" cy="10" r="1"/></symbol>
+    <symbol id="i-bill" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/><path d="M7 15h2M12 15h5"/></symbol>
   </defs>
 </svg>
 
@@ -1112,9 +1113,13 @@
     <!-- Admin Navigation (Hanya tampil jika role Admin) -->
     <div id="adminSidebarNav" style="{{ ($role ?? 'admin') === 'patient' ? 'display: none;' : '' }}">
       <nav class="nav" aria-label="Navigasi admin">
-        <a href="javascript:void(0)" class="active" aria-current="page">
+        <a href="{{ route('admin.calendar') }}" class="active" aria-current="page" title="Jadwal Dokter">
           <svg><use href="#i-cal"/></svg>
           <span>Jadwal Dokter</span>
+        </a>
+        <a href="{{ route('admin.dashboard') }}" class="" title="Riwayat Pembayaran">
+          <svg><use href="#i-bill"/></svg>
+          <span>Riwayat Pembayaran</span>
         </a>
       </nav>
 

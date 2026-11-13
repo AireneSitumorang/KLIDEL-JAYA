@@ -8,7 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  @else
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="{{ asset('js/app.js') }}" defer></script>
+  @endif
   <style>
     :root {
       --color-primary: #012D68;
@@ -80,6 +86,11 @@
       <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
       <span>{{ session('success') }}</span>
     </div>
+    <script>
+      try {
+        localStorage.setItem('klinik_doctor_examination_completed', Date.now().toString());
+      } catch (e) {}
+    </script>
   @endif
 
   @if($errors->any())
@@ -599,6 +610,11 @@
     window.addEventListener('DOMContentLoaded', () => {
       const tabParam = new URLSearchParams(window.location.search).get('tab');
       if (tabParam) switchMainTab(tabParam);
+      @if(session('success'))
+        try {
+          localStorage.setItem('klinik_doctor_examination_completed', Date.now().toString());
+        } catch (e) {}
+      @endif
     });
   </script>
 

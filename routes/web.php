@@ -21,6 +21,9 @@ Route::get('/quick-login/{role}', [AuthController::class, 'quickLogin'])->name('
 
 // Patient / User Dashboard, Calendar & Medical Records
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/appointment-status', [HomeController::class, 'getAppointmentStatus'])->name('appointment.status');
+Route::post('/booking', [HomeController::class, 'storeBooking'])->name('booking.store');
+Route::post('/payment', [HomeController::class, 'processPayment'])->name('payment.process');
 Route::get('/calendar', [HomeController::class, 'calendar'])->name('calendar');
 Route::get('/rekam-medis', [HomeController::class, 'medicalRecords'])->name('rekam-medis');
 
@@ -33,5 +36,7 @@ Route::middleware(['doctor'])->prefix('doctor')->name('doctor.')->group(function
 // Admin Routes (Protected by AdminMiddleware)
 Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('dashboard');
-    Route::get('/calendar', [AdminController::class, 'index'])->name('calendar');
+    Route::get('/calendar', [AdminController::class, 'calendar'])->name('calendar');
+    Route::get('/export-csv', [AdminController::class, 'exportCsv'])->name('exportCsv');
+    Route::post('/transaction', [AdminController::class, 'storeTransaction'])->name('storeTransaction');
 });
