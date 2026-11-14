@@ -43,6 +43,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user is a pharmacist.
+     */
+    public function isApoteker(): bool
+    {
+        return $this->role === 'apoteker';
+    }
+
+    /**
      * Doctor profile associated with this user account.
      *
      * @return HasOne<Doctor, $this>

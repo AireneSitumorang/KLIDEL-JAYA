@@ -13,9 +13,6 @@ class AuthController extends Controller
     /**
      * Display the login view.
      */
-    /**
-     * Display the login view.
-     */
     public function showLoginForm(): View|RedirectResponse
     {
         if (Auth::check()) {
@@ -30,10 +27,16 @@ class AuthController extends Controller
                 return redirect()->route('doctor.dashboard');
             }
 
+            if ($user->isApoteker()) {
+                return redirect()->route('apoteker.dashboard');
+            }
+
             return redirect()->route('home');
         }
 
-        return view('auth.login', ['initialRole' => request('role', 'user')]);
+        return view('auth.login', [
+            'initialRole' => request('role', 'user')
+        ]);
     }
 
     /**
@@ -78,6 +81,11 @@ class AuthController extends Controller
                     ->with('success', 'Selamat datang di Portal Layanan Dokter, '.$user->name);
             }
 
+            if ($user->isApoteker()) {
+                return redirect()->intended(route('apoteker.dashboard'))
+                    ->with('success', 'Selamat datang di Portal Apoteker, '.$user->name);
+            }
+
             return redirect()->intended(route('home'))
                 ->with('success', 'Selamat datang kembali, '.$user->name);
         }
@@ -98,12 +106,13 @@ class AuthController extends Controller
             'lina' => 'lina@aihealth.com',
             'saran' => 'saran@aihealth.com',
             'anaya', 'doctor', 'dokter' => 'anaya@aihealth.com',
+            'apoteker', 'pharmacist' => 'apoteker@aihealth.com',
             default => 'user@aihealth.com',
         };
 
         $user = User::where('email', $email)->first();
 
-        // Fallback for doctor default if anaya@ is not yet seeded
+        // Fallback for doctor default if anaya@ is not yet seeded.
         if (! $user && in_array($role, ['anaya', 'doctor', 'dokter'])) {
             $user = User::where('email', 'dokter@aihealth.com')->first();
         }
@@ -113,17 +122,26 @@ class AuthController extends Controller
             request()->session()->regenerate();
 
             if ($user->isAdmin()) {
-                return redirect()->route('admin.dashboard')->with('success', 'Masuk cepat sebagai Administrator ('.$user->name.')');
+                return redirect()->route('admin.dashboard')
+                    ->with('success', 'Masuk cepat sebagai Administrator ('.$user->name.')');
             }
 
             if ($user->isDoctor()) {
-                return redirect()->route('doctor.dashboard')->with('success', 'Masuk cepat sebagai '.$user->name);
+                return redirect()->route('doctor.dashboard')
+                    ->with('success', 'Masuk cepat sebagai '.$user->name);
             }
 
-            return redirect()->route('home')->with('success', 'Masuk cepat sebagai Pasien / User ('.$user->name.')');
+            if ($user->isApoteker()) {
+                return redirect()->route('apoteker.dashboard')
+                    ->with('success', 'Masuk cepat sebagai Apoteker ('.$user->name.')');
+            }
+
+            return redirect()->route('home')
+                ->with('success', 'Masuk cepat sebagai Pasien / User ('.$user->name.')');
         }
 
-        return redirect()->route('login')->with('error', 'Akun demo tidak ditemukan.');
+        return redirect()->route('login')
+            ->with('error', 'Akun demo tidak ditemukan.');
     }
 
     /**
@@ -136,6 +154,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('info', 'Anda telah berhasil keluar.');
+        return redirect()->route('login')
+            ->with('info', 'Anda telah berhasil keluar.');
     }
 }
